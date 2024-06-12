@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:cardCornerRadius="12dp"
+    tools:layout_margin="30dp">
+
+    <FrameLayout
+        android:id="@+id/contentGroup"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ImageView
+        android:id="@+id/touchHolder"
+        android:layout_width="48dp"
+        android:layout_height="24dp"
+        android:layout_gravity="center_horizontal|top"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="11dp"
+        android:src="#333" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/closeButton"
+        android:layout_width="44dp"
+        android:layout_height="20dp"
+        android:layout_gravity="start|top"
+        android:layout_margin="2dp"
+        android:background="@drawable/l_debug_bg_floating_button"
+        android:src="@drawable/baseline_close_24"
+        app:tint="#333" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/upButton"
+        android:layout_width="44dp"
+        android:layout_height="20dp"
+        android:layout_gravity="end|top"
+        android:layout_margin="2dp"
+        android:background="@drawable/l_debug_bg_floating_button"
+        android:src="@drawable/baseline_keyboard_arrow_up_24"
+        app:tint="#333" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/downButton"
+        android:layout_width="44dp"
+        android:layout_height="20dp"
+        android:layout_gravity="end|top"
+        android:layout_marginHorizontal="52dp"
+        android:layout_marginVertical="2dp"
+        android:background="@drawable/l_debug_bg_floating_button"
+        android:src="@drawable/baseline_keyboard_arrow_down_24"
+        app:tint="#333" />
+
+</androidx.cardview.widget.CardView>

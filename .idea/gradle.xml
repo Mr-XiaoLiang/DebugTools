@@ -12,6 +12,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/desktop" />
+            <option value="$PROJECT_DIR$/floating" />
             <option value="$PROJECT_DIR$/lite" />
             <option value="$PROJECT_DIR$/local" />
             <option value="$PROJECT_DIR$/remote" />
