@@ -7,20 +7,25 @@ import android.os.Build
 import android.provider.Settings
 import android.util.DisplayMetrics
 import android.util.Size
+import android.util.TypedValue
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.WindowManager
 import android.widget.ImageView
 import androidx.compose.runtime.Composable
+import com.lollipop.debug.floating.impl.BasicFloatingPanel
 import com.lollipop.debug.floating.impl.FloatingButtonImpl
-import com.lollipop.debug.floating.impl.FloatingPanelImpl
+import com.lollipop.debug.floating.impl.FloatingPanelComposeImpl
+import com.lollipop.debug.floating.impl.FloatingPanelViewImpl
 import com.lollipop.debug.floating.utils.FloatingDragHelper
 
 object FloatingHelper {
 
-    val defaultConfig = Config()
+    val defaultPanelConfig = PanelConfig()
 
-    class Config {
+    val defaultButtonConfig = ButtonConfig()
+
+    class PanelConfig {
         var defaultHeightWeight = 0.5F
         var maxWidthWeight = 0.9F
         var maxHeightWeight = 1F
@@ -30,9 +35,17 @@ object FloatingHelper {
         var closeOnlyHide = true
     }
 
+    class ButtonConfig {
+        var hideOnBackground = true
+        var widthDp = 48F
+        var heightDp = 48F
+        var defaultX = 0
+        var defaultY = 0
+    }
+
     fun createLocalPanel(
         activity: Activity,
-        config: Config,
+        config: PanelConfig,
         composeContent: @Composable () -> Unit
     ): Result<FloatingPanel> {
         return try {
@@ -44,7 +57,7 @@ object FloatingHelper {
 
     fun createOverlayPanel(
         context: Context,
-        config: Config,
+        config: PanelConfig,
         composeContent: @Composable () -> Unit
     ): Result<FloatingPanel> {
         val app = context.applicationContext
@@ -60,16 +73,44 @@ object FloatingHelper {
         }
     }
 
+    fun createLocalPanel(
+        activity: Activity,
+        config: PanelConfig,
+        content: View
+    ): Result<FloatingPanel> {
+        return try {
+            Result.success(createFloatingPanel(activity, false, config, content))
+        } catch (e: Throwable) {
+            Result.failure(e)
+        }
+    }
+
+    fun createOverlayPanel(
+        context: Context,
+        config: PanelConfig,
+        content: View
+    ): Result<FloatingPanel> {
+        val app = context.applicationContext
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!Settings.canDrawOverlays(app)) {
+                return Result.failure(IllegalStateException("Overlay permission denied"))
+            }
+        }
+        return try {
+            Result.success(createFloatingPanel(app, true, config, content))
+        } catch (e: Throwable) {
+            Result.failure(e)
+        }
+    }
+
     fun createLocalButton(
         activity: Activity,
         button: View,
-        width: Int,
-        height: Int,
-        config: Config,
+        config: ButtonConfig,
     ): Result<FloatingButton> {
         return try {
             Result.success(
-                createFloatingButton(activity, button, width, height, false, config)
+                createFloatingButton(activity, button, false, config)
             )
         } catch (e: Throwable) {
             Result.failure(e)
@@ -79,9 +120,7 @@ object FloatingHelper {
     fun createOverlayButton(
         context: Context,
         button: View,
-        width: Int,
-        height: Int,
-        config: Config,
+        config: ButtonConfig,
     ): Result<FloatingButton> {
         val app = context.applicationContext
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -91,7 +130,7 @@ object FloatingHelper {
         }
         return try {
             Result.success(
-                createFloatingButton(app, button, width, height, true, config)
+                createFloatingButton(app, button, true, config)
             )
         } catch (e: Throwable) {
             Result.failure(e)
@@ -101,14 +140,12 @@ object FloatingHelper {
     fun createLocalIcon(
         activity: Activity,
         iconId: Int,
-        width: Int,
-        height: Int,
-        config: Config,
+        config: ButtonConfig,
         onClickListener: OnClickListener
     ): Result<FloatingButton> {
         return try {
             Result.success(
-                createFloatingIcon(activity, iconId, width, height, false, config, onClickListener)
+                createFloatingIcon(activity, iconId, false, config, onClickListener)
             )
         } catch (e: Throwable) {
             Result.failure(e)
@@ -118,9 +155,7 @@ object FloatingHelper {
     fun createOverlayIcon(
         context: Context,
         iconId: Int,
-        width: Int,
-        height: Int,
-        config: Config,
+        config: ButtonConfig,
         onClickListener: OnClickListener
     ): Result<FloatingButton> {
         val app = context.applicationContext
@@ -131,7 +166,7 @@ object FloatingHelper {
         }
         return try {
             Result.success(
-                createFloatingIcon(app, iconId, width, height, true, config, onClickListener)
+                createFloatingIcon(app, iconId, true, config, onClickListener)
             )
         } catch (e: Throwable) {
             Result.failure(e)
@@ -141,10 +176,8 @@ object FloatingHelper {
     private fun createFloatingIcon(
         context: Context,
         iconId: Int,
-        width: Int,
-        height: Int,
         isOverlay: Boolean,
-        config: Config,
+        config: ButtonConfig,
         onClickListener: OnClickListener
     ): FloatingButton {
         val button = ImageView(context).apply {
@@ -152,24 +185,30 @@ object FloatingHelper {
             scaleType = ImageView.ScaleType.FIT_CENTER
             setOnClickListener(onClickListener)
         }
-        return createFloatingButton(context, button, width, height, isOverlay, config)
+        return createFloatingButton(context, button, isOverlay, config)
     }
 
     private fun createFloatingButton(
         context: Context,
         button: View,
-        width: Int,
-        height: Int,
         isOverlay: Boolean,
-        config: Config,
+        config: ButtonConfig,
     ): FloatingButton {
         val floatingButton = FloatingButtonImpl(button)
         floatingButton.setHideOnBackground(config.hideOnBackground)
         addViewToWindow(context, floatingButton.view, isOverlay) { m, v, p ->
-            p.width = width
-            p.height = height
-            p.x = 0
-            p.y = 0
+            p.width = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                config.widthDp,
+                context.resources.displayMetrics
+            ).toInt()
+            p.height = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                config.heightDp,
+                context.resources.displayMetrics
+            ).toInt()
+            p.x = config.defaultX
+            p.y = config.defaultY
             p.gravity = 0
             p.flags = (WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
                     or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
@@ -184,10 +223,37 @@ object FloatingHelper {
     private fun createFloatingPanel(
         context: Context,
         isOverlay: Boolean,
-        config: Config,
+        config: PanelConfig,
         composeContent: @Composable () -> Unit
     ): FloatingPanel {
-        val panelImpl = FloatingPanelImpl(context, composeContent)
+        return createFloatingPanel(
+            context,
+            isOverlay,
+            config,
+            FloatingPanelComposeImpl(context, composeContent)
+        )
+    }
+
+    private fun createFloatingPanel(
+        context: Context,
+        isOverlay: Boolean,
+        config: PanelConfig,
+        viewContent: View
+    ): FloatingPanel {
+        return createFloatingPanel(
+            context,
+            isOverlay,
+            config,
+            FloatingPanelViewImpl(context, viewContent)
+        )
+    }
+
+    private fun createFloatingPanel(
+        context: Context,
+        isOverlay: Boolean,
+        config: PanelConfig,
+        panelImpl: BasicFloatingPanel
+    ): FloatingPanel {
         val viewHolder = panelImpl.viewHolder
         val hideOnBackground = config.hideOnBackground
         val closeOnlyHide = config.closeOnlyHide

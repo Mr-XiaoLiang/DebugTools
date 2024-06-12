@@ -5,8 +5,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.ComposeView
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
@@ -20,16 +18,16 @@ import androidx.lifecycle.setViewTreeViewModelStoreOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import com.lollipop.debug.floating.FloatingPanel
 import com.lollipop.debug.floating.databinding.LDebugFloatingPanelBinding
+import com.lollipop.debug.floating.utils.FloatingDragHelper
 import com.lollipop.debug.floating.utils.FloatingSavedStateRegistryOwner
 
-internal class FloatingPanelImpl(
-    private val context: Context,
-    private val composeContent: @Composable () -> Unit
+abstract class BasicFloatingPanel(
+    protected val context: Context,
 ) : FloatingPanel, LifecycleOwner, ViewModelStoreOwner {
 
-    private val savedStateRegistryController = FloatingSavedStateRegistryOwner()
+    protected val savedStateRegistryController = FloatingSavedStateRegistryOwner()
 
-    private val floatingViewModelStore = ViewModelStore()
+    protected val floatingViewModelStore = ViewModelStore()
 
     override val lifecycle: Lifecycle
         get() {
@@ -46,14 +44,14 @@ internal class FloatingPanelImpl(
     var isClosed = false
         private set
 
-    private var closeOnlyHide = true
+    protected var closeOnlyHide = true
 
     val view: View
         get() {
             return viewHolder.root
         }
 
-    private val hideOnBackgroundObserver = LifecycleEventObserver { _, event ->
+    protected val hideOnBackgroundObserver = LifecycleEventObserver { _, event ->
         if (event == Lifecycle.Event.ON_PAUSE) {
             hide()
         }
@@ -66,13 +64,13 @@ internal class FloatingPanelImpl(
     private fun initPanel() {
         savedStateRegistryController.onCreate()
         setViewTreeLifecycle(view)
-        viewHolder.setContent(createDebugPanel(context, composeContent))
+        viewHolder.setContent(createPanelContent(context))
         viewHolder.setOnCloseClickListener {
             onCloseClick()
         }
     }
 
-    private fun onCloseClick() {
+    protected open fun onCloseClick() {
         if (closeOnlyHide) {
             hide()
         } else {
@@ -117,15 +115,9 @@ internal class FloatingPanelImpl(
         ProcessLifecycleOwner.get().lifecycle.removeObserver(hideOnBackgroundObserver)
     }
 
-    private fun createDebugPanel(
+    abstract fun createPanelContent(
         context: Context,
-        content: @Composable () -> Unit
-    ): View {
-        return ComposeView(context).apply {
-            setParentCompositionContext(null)
-            setContent(content)
-        }
-    }
+    ): View
 
     fun setHideOnBackground(enable: Boolean) {
         if (enable) {
