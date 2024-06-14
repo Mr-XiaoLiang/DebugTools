@@ -4,12 +4,12 @@ object DPanel {
 
     var implements: DebugPanel? = null
 
-    fun getPanel(name: String): DebugPanelView {
-        return implements?.getPanel(name) ?: EmptyPanelView
+    fun panel(name: String): DebugPanelView {
+        return implements?.panel(name) ?: EmptyPanelView
     }
 
     interface DebugPanel {
-        fun getPanel(name: String): DebugPanelView
+        fun panel(name: String): DebugPanelView
     }
 
     interface DebugPanelView {

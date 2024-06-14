@@ -310,7 +310,7 @@ object FloatingHelper {
         return panelImpl
     }
 
-    private fun addViewToWindow(
+    fun addViewToWindow(
         context: Context,
         view: View,
         isOverlay: Boolean,
