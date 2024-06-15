@@ -10,5 +10,4 @@ internal class FloatingPanelViewImpl(
     override fun createPanelContent(context: Context): View {
         return contentView
     }
-
 }

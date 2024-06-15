@@ -46,7 +46,7 @@ abstract class BasicFloatingPanel(
 
     protected var closeOnlyHide = true
 
-    val view: View
+    val view: VisibleStateGroup
         get() {
             return viewHolder.root
         }
@@ -145,7 +145,7 @@ abstract class BasicFloatingPanel(
             }
         }
 
-        val root: View
+        val root: VisibleStateGroup
             get() {
                 return binding.root
             }
