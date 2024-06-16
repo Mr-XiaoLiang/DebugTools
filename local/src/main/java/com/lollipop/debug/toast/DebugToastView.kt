@@ -16,9 +16,10 @@ import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.lollipop.debug.DebugToastHelper
 import java.util.LinkedList
 
-class DebugToastView(context: Context) : FrameLayout(context) {
+class DebugToastView(context: Context) : FrameLayout(context), DebugToastHelper.ToastView {
 
     companion object {
         var toastBackgroundRadiusDp = 12F
@@ -58,7 +59,19 @@ class DebugToastView(context: Context) : FrameLayout(context) {
         postHidePanel()
     }
 
-    fun show(text: String) {
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        DebugToastHelper.toastView = this
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        if (DebugToastHelper.toastView === this) {
+            DebugToastHelper.toastView = null
+        }
+    }
+
+    override fun show(text: String) {
         if (!isVisible) {
             isVisible = true
         }
