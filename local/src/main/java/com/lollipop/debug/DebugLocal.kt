@@ -63,6 +63,7 @@ object DebugLocal {
 
     private fun initDebugLocal(activity: Activity) {
         // TODO
+        DebugToastHelper.init(activity.application)
     }
 
     private fun getMetaDataBoolean(context: Context, key: String): Boolean {

@@ -59,18 +59,6 @@ class DebugToastView(context: Context) : FrameLayout(context), DebugToastHelper.
         postHidePanel()
     }
 
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        DebugToastHelper.toastView = this
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        if (DebugToastHelper.toastView === this) {
-            DebugToastHelper.toastView = null
-        }
-    }
-
     override fun show(text: String) {
         if (!isVisible) {
             isVisible = true

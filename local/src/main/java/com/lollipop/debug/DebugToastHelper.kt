@@ -1,16 +1,31 @@
 package com.lollipop.debug
 
 import android.app.Application
+import android.view.WindowManager
+import com.lollipop.debug.floating.FloatingHelper
+import com.lollipop.debug.toast.DebugToastView
 
 object DebugToastHelper : DToast.DebugToast {
 
     val toastHistory = mutableListOf<ToastInfo>()
 
-    var toastView: ToastView? = null
+    private var toastView: ToastView? = null
 
     fun init(application: Application) {
         DToast.implements = this
-        // TODO 创建悬浮窗
+        val debugToastView = DebugToastView(application)
+        toastView = debugToastView
+        FloatingHelper.addViewToWindow(application, debugToastView, true) { m, v, p ->
+            val screenSize = FloatingHelper.getScreenSize(m)
+            p.width = (screenSize.width * 0.4F).toInt()
+            p.height = (screenSize.height * 0.4F).toInt()
+            p.flags = FloatingHelper.flagsOf(
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            )
+        }
     }
 
     override fun show(text: String, detail: String) {

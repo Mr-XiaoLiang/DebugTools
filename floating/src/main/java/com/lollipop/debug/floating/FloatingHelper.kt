@@ -340,7 +340,7 @@ object FloatingHelper {
         }
     }
 
-    private fun getScreenSize(windowManager: WindowManager): Size {
+    fun getScreenSize(windowManager: WindowManager): Size {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             val windowMetrics = windowManager.currentWindowMetrics
             return Size(windowMetrics.bounds.width(), windowMetrics.bounds.height())
@@ -349,6 +349,14 @@ object FloatingHelper {
             windowManager.defaultDisplay.getMetrics(displayMetrics)
             return Size(displayMetrics.widthPixels, displayMetrics.heightPixels)
         }
+    }
+
+    fun flagsOf(vararg flags: Int): Int {
+        var result = 0
+        for (flag in flags) {
+            result = result or flag
+        }
+        return result
     }
 
 }
