@@ -45,6 +45,7 @@ abstract class BasicFloatingPanel(
         private set
 
     protected var closeOnlyHide = true
+        private set
 
     val view: VisibleStateGroup
         get() {
