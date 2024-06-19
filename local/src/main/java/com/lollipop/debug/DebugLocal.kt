@@ -16,6 +16,25 @@ object DebugLocal {
 
     const val KEY_REQUEST_OVERLAY_PERMISSION = "com.lollipop.debug.overlay.request"
 
+    fun hasOverlayPermission(context: Context): Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return Settings.canDrawOverlays(context)
+        }
+        return true
+    }
+
+    fun requestOverlayPermission(context: Context) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return
+        }
+        val intent = Intent(
+            Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+            Uri.parse("package:${context.packageName}")
+        )
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(intent)
+    }
+
     fun init(application: Application) {
         isRequestOverlayPermission = getMetaDataBoolean(application, KEY_REQUEST_OVERLAY_PERMISSION)
         application.registerActivityLifecycleCallbacks(object :
@@ -48,14 +67,12 @@ object DebugLocal {
         if (InitState.isAllInit) {
             return
         }
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.canDrawOverlays(activity)) {
+        if (hasOverlayPermission(activity)) {
             initDebugLocal(activity)
             return
         }
         if (isRequestOverlayPermission) {
-            val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
-            intent.data = Uri.parse("package:${activity.packageName}")
-            activity.startActivity(intent)
+            requestOverlayPermission(activity)
             // 请求过一次，不管给不给，都不要再请求了
             isRequestOverlayPermission = false
         }
@@ -64,6 +81,7 @@ object DebugLocal {
     private fun initDebugLocal(activity: Activity) {
         // TODO
         DebugToastHelper.init(activity.application)
+        InitState.isToastInit = true
     }
 
     private fun getMetaDataBoolean(context: Context, key: String): Boolean {
@@ -71,10 +89,18 @@ object DebugLocal {
     }
 
     private fun getMetaData(context: Context, key: String): String {
-        return context.packageManager.getApplicationInfo(
-            context.packageName,
-            PackageManager.GET_META_DATA
-        ).metaData.getString(key) ?: ""
+        try {
+            val metaData = context.packageManager.getApplicationInfo(
+                context.packageName,
+                PackageManager.GET_META_DATA
+            ).metaData
+            if (metaData.containsKey(key)) {
+                return metaData.getString(key) ?: ""
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return ""
     }
 
     private object InitState {

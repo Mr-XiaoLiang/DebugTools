@@ -1,6 +1,7 @@
 package com.lollipop.debug
 
 import android.app.Application
+import android.view.Gravity
 import android.view.WindowManager
 import com.lollipop.debug.floating.FloatingHelper
 import com.lollipop.debug.toast.DebugToastView
@@ -24,6 +25,10 @@ object DebugToastHelper : DToast.DebugToast {
                 WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            )
+            p.gravity = FloatingHelper.flagsOf(
+                Gravity.RIGHT,
+                Gravity.TOP
             )
         }
     }

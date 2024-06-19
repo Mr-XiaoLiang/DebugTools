@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.os.Looper
 import android.util.TypedValue
+import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
@@ -69,6 +70,7 @@ class DebugToastView(context: Context) : FrameLayout(context), DebugToastHelper.
         val size = toastList.size
         toastList.addLast(ToastInfo(text))
         adapter.notifyItemInserted(size)
+        recyclerView.scrollToPosition(size)
         delayHandler.postDelayed(autoRemoveTask, 3000)
     }
 
@@ -106,6 +108,7 @@ class DebugToastView(context: Context) : FrameLayout(context), DebugToastHelper.
             fun create(context: Context): ToastItemHolder {
                 val textView = TextView(context).apply {
                     setTextColor(0xFFFFFFFF.toInt())
+                    gravity = Gravity.CENTER
                     textSize = 14F
                     val dp8 = TypedValue.applyDimension(
                         TypedValue.COMPLEX_UNIT_DIP,
@@ -126,7 +129,7 @@ class DebugToastView(context: Context) : FrameLayout(context), DebugToastHelper.
                             toastBackgroundRadiusDp,
                             context.resources.displayMetrics
                         ),
-                        0x33000000.toInt()
+                        0x88000000.toInt()
                     )
                 }
                 return ToastItemHolder(textView)
