@@ -37,13 +37,6 @@ class MainActivity : ComponentActivity() {
         DebugLocal.init(application)
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (!DebugLocal.hasOverlayPermission(this)) {
-            DebugLocal.requestOverlayPermission(this)
-        }
-    }
-
 }
 
 @Composable

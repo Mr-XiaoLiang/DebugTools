@@ -36,7 +36,9 @@ object DebugLocal {
     }
 
     fun init(application: Application) {
-        isRequestOverlayPermission = getMetaDataBoolean(application, KEY_REQUEST_OVERLAY_PERMISSION)
+        isRequestOverlayPermission = getMetaBoolean(
+            application, KEY_REQUEST_OVERLAY_PERMISSION, false
+        )
         application.registerActivityLifecycleCallbacks(object :
             Application.ActivityLifecycleCallbacks {
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
@@ -84,11 +86,22 @@ object DebugLocal {
         InitState.isToastInit = true
     }
 
-    private fun getMetaDataBoolean(context: Context, key: String): Boolean {
-        return getMetaData(context, key).lowercase() == "true"
+    private fun getMetaBoolean(context: Context, key: String, def: Boolean): Boolean {
+        try {
+            val metaData = context.packageManager.getApplicationInfo(
+                context.packageName,
+                PackageManager.GET_META_DATA
+            ).metaData
+            if (metaData.containsKey(key)) {
+                return metaData.getBoolean(key, def)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return def
     }
 
-    private fun getMetaData(context: Context, key: String): String {
+    private fun getMetaString(context: Context, key: String): String {
         try {
             val metaData = context.packageManager.getApplicationInfo(
                 context.packageName,
