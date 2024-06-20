@@ -110,6 +110,9 @@ abstract class BasicFloatingPanel(
         if (view.isVisible) {
             hide()
         }
+        view.parent?.let {
+            // TODO 能不能再parent的位置获取到windowManager？然后把自己移除掉？
+        }
         savedStateRegistryController.onDestroy()
         viewHolder.destroy()
         isClosed = true

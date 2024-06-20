@@ -82,6 +82,10 @@ object DebugLocal {
 
     private fun initDebugLocal(activity: Activity) {
         // TODO
+        initToast(activity)
+    }
+
+    private fun initToast(activity: Activity) {
         DebugToastHelper.init(activity.application)
         InitState.isToastInit = true
     }
