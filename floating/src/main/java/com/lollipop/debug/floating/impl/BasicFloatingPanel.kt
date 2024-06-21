@@ -18,7 +18,6 @@ import androidx.lifecycle.setViewTreeViewModelStoreOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import com.lollipop.debug.floating.FloatingPanel
 import com.lollipop.debug.floating.databinding.LDebugFloatingPanelBinding
-import com.lollipop.debug.floating.utils.FloatingDragHelper
 import com.lollipop.debug.floating.utils.FloatingSavedStateRegistryOwner
 
 abstract class BasicFloatingPanel(
@@ -51,6 +50,8 @@ abstract class BasicFloatingPanel(
         get() {
             return viewHolder.root
         }
+
+    var panelCloseCallback: ((BasicFloatingPanel) -> Unit)? = null
 
     protected val hideOnBackgroundObserver = LifecycleEventObserver { _, event ->
         if (event == Lifecycle.Event.ON_PAUSE) {
@@ -110,9 +111,7 @@ abstract class BasicFloatingPanel(
         if (view.isVisible) {
             hide()
         }
-        view.parent?.let {
-            // TODO 能不能再parent的位置获取到windowManager？然后把自己移除掉？
-        }
+        panelCloseCallback?.invoke(this)
         savedStateRegistryController.onDestroy()
         viewHolder.destroy()
         isClosed = true

@@ -2,6 +2,7 @@ package com.lollipop.debug
 
 import android.app.Application
 import android.view.Gravity
+import android.view.View
 import android.view.WindowManager
 import com.lollipop.debug.floating.FloatingHelper
 import com.lollipop.debug.toast.DebugToastView
@@ -14,6 +15,11 @@ object DebugToastHelper : DToast.DebugToast {
 
     fun init(application: Application) {
         DToast.implements = this
+        toastView?.let {
+            if (it is View) {
+                FloatingHelper.removeViewFromWindow(it)
+            }
+        }
         val debugToastView = DebugToastView(application)
         toastView = debugToastView
         FloatingHelper.addViewToWindow(application, debugToastView, true) { m, v, p ->

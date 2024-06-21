@@ -257,7 +257,12 @@ object FloatingHelper {
         val viewHolder = panelImpl.viewHolder
         val hideOnBackground = config.hideOnBackground
         val closeOnlyHide = config.closeOnlyHide
-        addViewToWindow(context, panelImpl.view, isOverlay) { m, v, p ->
+
+        val view = panelImpl.view
+        panelImpl.panelCloseCallback = {
+            removeViewFromWindow(view)
+        }
+        addViewToWindow(context, view, isOverlay) { m, v, p ->
             var heightWeight = config.defaultHeightWeight
             val maxWidthWight = config.maxWidthWeight
             val maxHeightWeight = config.maxHeightWeight
@@ -310,6 +315,22 @@ object FloatingHelper {
         return panelImpl
     }
 
+    private fun getWindowManager(context: Context): WindowManager? {
+        return context.getSystemService(Context.WINDOW_SERVICE) as? WindowManager
+    }
+
+    fun removeViewFromWindow(view: View) {
+        getWindowManager(view.context)?.removeView(view)
+    }
+
+    fun addViewToWindow(
+        view: View,
+        isOverlay: Boolean,
+        builder: (WindowManager, View, WindowManager.LayoutParams) -> Unit
+    ) {
+        addViewToWindow(view.context, view, isOverlay, builder)
+    }
+
     fun addViewToWindow(
         context: Context,
         view: View,
@@ -317,7 +338,7 @@ object FloatingHelper {
         builder: (WindowManager, View, WindowManager.LayoutParams) -> Unit
     ) {
         val layoutParams = WindowManager.LayoutParams()
-        val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as? WindowManager
+        val windowManager = getWindowManager(context)
         if (windowManager != null) {
             if (isOverlay) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
