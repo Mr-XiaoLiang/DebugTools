@@ -1,37 +1,27 @@
 package com.lollipop.debug
 
+import com.lollipop.debug.panel.DebugListPanelAdapter
+import com.lollipop.debug.panel.DebugListPanelPage
+import com.lollipop.debug.panel.DebugStructuredPanelPage
+import com.lollipop.debug.panel.EmptyDebugListPanelPage
+import com.lollipop.debug.panel.EmptyStructuredPanelView
+
 object DPanel {
 
     var implements: DebugPanel? = null
 
-    fun panel(name: String): DebugPanelView {
-        return implements?.panel(name) ?: EmptyPanelView
+    fun panel(name: String): DebugStructuredPanelPage {
+        return implements?.panel(name) ?: EmptyStructuredPanelView
+    }
+
+    fun list(name: String, adapter: DebugListPanelAdapter): DebugListPanelPage {
+        return implements?.list(name, adapter) ?: EmptyDebugListPanelPage
     }
 
     interface DebugPanel {
-        fun panel(name: String): DebugPanelView
-    }
+        fun panel(name: String): DebugStructuredPanelPage
 
-    interface DebugPanelView {
-        fun group(id: String, name: String)
-        fun button(id: String, groupId: String, name: String, onClickListener: () -> Unit)
-        fun text(id: String, groupId: String, name: String, value: String)
-    }
-
-    private object EmptyPanelView : DebugPanelView {
-        override fun group(id: String, name: String) {
-        }
-
-        override fun button(
-            id: String,
-            groupId: String,
-            name: String,
-            onClickListener: () -> Unit
-        ) {
-        }
-
-        override fun text(id: String, groupId: String, name: String, value: String) {
-        }
+        fun list(name: String, adapter: DebugListPanelAdapter): DebugListPanelPage
     }
 
 }
