@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="debugPanelBackground">#FFFFFFFF</color>
+    <color name="debugPanelTabText">#005064</color>
+    <color name="debugPanelTabClose">#475E64</color>
+</resources>

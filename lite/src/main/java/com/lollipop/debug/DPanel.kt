@@ -18,10 +18,16 @@ object DPanel {
         return implements?.list(name, adapter) ?: EmptyDebugListPanelPage
     }
 
+    fun navigate(name: String) {
+        implements?.navigate(name)
+    }
+
     interface DebugPanel {
         fun panel(name: String): DebugStaticPanelPage
 
         fun list(name: String, adapter: DebugListPanelAdapter): DebugListPanelPage
+
+        fun navigate(name: String)
     }
 
 }

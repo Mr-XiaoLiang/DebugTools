@@ -1,56 +1,77 @@
 package com.lollipop.debug.panel
 
 import com.lollipop.debug.DPanel
+import com.lollipop.debug.helper.ListenerManager
 import com.lollipop.debug.panel.listpanel.DebugListPanelPageInfo
 import com.lollipop.debug.panel.staticpanel.DebugStaticPanelPageInfo
 
 data object DebugPanelImpl : DPanel.DebugPanel {
 
+    private val pageMap = HashMap<String, DebugPanelPageInfo>()
+
     private val pageList = ArrayList<DebugPanelPageDescriptor>()
+
+    private val listenerManager = ListenerManager<OnPageChangedListener>()
 
     val pages: List<DebugPanelPageDescriptor>
         get() {
             return pageList
         }
 
+    private fun register(descriptor: DebugPanelPageInfo) {
+        pageMap[descriptor.id] = descriptor
+    }
+
     override fun panel(name: String): DebugStaticPanelPage {
-        for (info in pageList) {
-            if (info is DebugPanelPageDescriptor.RemoteStatic && info.id == name) {
-                return info.info
-            }
+        val oldInfo = pageMap[name]
+        if (oldInfo != null && oldInfo is DebugPanelPageInfo.RemoteStatic) {
+            return oldInfo.info
         }
         val info = DebugStaticPanelPageInfo(name, name)
-        pageList.add(DebugPanelPageDescriptor.RemoteStatic(info))
+        register(DebugPanelPageInfo.RemoteStatic(info))
         return info
     }
 
     override fun list(name: String, adapter: DebugListPanelAdapter): DebugListPanelPage {
-        for (info in pageList) {
-            if (info is DebugPanelPageDescriptor.RemoteList && info.id == name) {
-                return info.info
-            }
+        val oldInfo = pageMap[name]
+        if (oldInfo != null && oldInfo is DebugPanelPageInfo.RemoteList) {
+            return oldInfo.info
         }
         val info = DebugListPanelPageInfo(name, adapter)
-        pageList.add(DebugPanelPageDescriptor.RemoteList(info))
+        register(DebugPanelPageInfo.RemoteList(info))
         return info
     }
 
-    fun push(descriptor: DebugPanelPageDescriptor) {
-        pageList.add(descriptor)
-    }
+    override fun navigate(name: String) {
+        val info = pageMap[name] ?: return
+        val size = pageList.size
+        when (info) {
+            is DebugPanelPageInfo.RemoteList -> {
+                pageList.add(DebugPanelPageDescriptor.RemoteList(info.info))
+            }
 
-    fun remove(descriptor: DebugPanelPageDescriptor) {
-        pageList.remove(descriptor)
-    }
-
-    fun remove(id: String) {
-        val removed = HashSet<DebugPanelPageDescriptor>()
-        for (info in pageList) {
-            if (info.closeable && info.id == id) {
-                removed.add(info)
+            is DebugPanelPageInfo.RemoteStatic -> {
+                pageList.add(DebugPanelPageDescriptor.RemoteStatic(info.info))
             }
         }
-        pageList.removeAll(removed)
+        if (size < pageList.size) {
+            listenerManager.invoke { it.onPageAdd(size) }
+        }
+    }
+
+    fun remove(index: Int) {
+        if (pageList.size > index && index >= 0) {
+            val descriptor = pageList[index]
+            if (descriptor.closeable) {
+                pageList.removeAt(index)
+                listenerManager.invoke { it.onPageRemove(index) }
+            }
+        }
+    }
+
+    interface OnPageChangedListener {
+        fun onPageAdd(index: Int)
+        fun onPageRemove(index: Int)
     }
 
 }

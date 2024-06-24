@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/l_debug_bg_floating_button"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingHorizontal="8dp"
+    android:paddingVertical="2dp">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/tabCloseButton"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:paddingVertical="4dp"
+        android:paddingEnd="4dp"
+        android:src="@drawable/baseline_close_24"
+        android:visibility="gone"
+        app:tint="@color/debugPanelTabClose"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/tabLabelView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/debugPanelTabText"
+        android:textSize="14sp"
+        tools:text="Label" />
+
+</LinearLayout>
+
