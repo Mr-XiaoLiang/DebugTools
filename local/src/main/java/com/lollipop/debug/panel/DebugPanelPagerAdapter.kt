@@ -1,8 +1,11 @@
 package com.lollipop.debug.panel
 
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.lollipop.debug.local.databinding.DebugPanelPageToastHistoryBinding
 import com.lollipop.debug.panel.pager.DebugPagerHolder
+import com.lollipop.debug.panel.pager.DebugToastHistoryPagerHolder
 
 class DebugPanelPagerAdapter(val data: List<DebugPanelPageDescriptor>) :
     RecyclerView.Adapter<DebugPagerHolder>() {
@@ -14,6 +17,11 @@ class DebugPanelPagerAdapter(val data: List<DebugPanelPageDescriptor>) :
 
             viewType == DebugPanelPageDescriptor.Toast.itemType -> {
                 // toast page
+                return DebugToastHistoryPagerHolder(
+                    DebugPanelPageToastHistoryBinding.inflate(
+                        LayoutInflater.from(parent.context), parent, false
+                    )
+                )
             }
 
             viewType >= DebugPanelPageDescriptor.LIST_PAGE_RANGE -> {

@@ -195,7 +195,7 @@ object FloatingHelper {
         config: ButtonConfig,
     ): FloatingButton {
         val floatingButton = FloatingButtonImpl(button)
-        floatingButton.setHideOnBackground(config.hideOnBackground)
+        floatingButton.setHideOnBackground(config.hideOnBackground && isOverlay)
         addViewToWindow(context, floatingButton.view, isOverlay) { m, v, p ->
             p.width = TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,

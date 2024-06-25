@@ -1,18 +1,21 @@
 package com.lollipop.debug
 
-import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
-import android.os.Bundle
 import android.provider.Settings
+import androidx.annotation.Keep
+import com.lollipop.debug.local.R
 
+@Keep
 object DebugLocal {
 
-    private var isRequestOverlayPermission = false
+    var isOverlayMode = false
+
+    var floatingButtonIcon = R.mipmap.debug_ic_fab
 
     const val KEY_REQUEST_OVERLAY_PERMISSION = "com.lollipop.debug.overlay.request"
 
@@ -35,77 +38,19 @@ object DebugLocal {
         context.startActivity(intent)
     }
 
+    @Keep
+    @JvmStatic
     fun init(application: Application) {
-        isRequestOverlayPermission = getMetaBoolean(
-            application, KEY_REQUEST_OVERLAY_PERMISSION, false
-        )
-        application.registerActivityLifecycleCallbacks(object :
-            Application.ActivityLifecycleCallbacks {
-            override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-            }
-
-            override fun onActivityStarted(activity: Activity) {
-            }
-
-            override fun onActivityResumed(activity: Activity) {
-                checkPermission(activity)
-            }
-
-            override fun onActivityPaused(activity: Activity) {
-            }
-
-            override fun onActivityStopped(activity: Activity) {
-            }
-
-            override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
-            }
-
-            override fun onActivityDestroyed(activity: Activity) {
-            }
-        })
-    }
-
-    private fun checkPermission(activity: Activity) {
-        if (InitState.isAllInit) {
-            return
-        }
-        if (hasOverlayPermission(activity)) {
-            initDebugLocal(activity)
-            return
-        }
-        if (isRequestOverlayPermission) {
-            requestOverlayPermission(activity)
-            // 请求过一次，不管给不给，都不要再请求了
-            isRequestOverlayPermission = false
+        if (isOverlayMode) {
+            DebugLocalOverlayImpl.init(application)
+        } else {
+            DebugLocalInnerImpl.init(application)
         }
     }
 
-    private fun initDebugLocal(activity: Activity) {
-        // TODO
-        initToast(activity)
-    }
-
-    private fun initToast(activity: Activity) {
-        DebugToastHelper.init(activity.application)
-        InitState.isToastInit = true
-    }
-
-    private fun getMetaBoolean(context: Context, key: String, def: Boolean): Boolean {
-        try {
-            val metaData = context.packageManager.getApplicationInfo(
-                context.packageName,
-                PackageManager.GET_META_DATA
-            ).metaData
-            if (metaData.containsKey(key)) {
-                return metaData.getBoolean(key, def)
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return def
-    }
-
-    private fun getMetaString(context: Context, key: String): String {
+    @Keep
+    @JvmStatic
+    fun getMetaString(context: Context, key: String): String {
         try {
             val metaData = context.packageManager.getApplicationInfo(
                 context.packageName,
@@ -120,13 +65,21 @@ object DebugLocal {
         return ""
     }
 
-    private object InitState {
-        var isPanelInit = false
-        var isToastInit = false
-        val isAllInit: Boolean
-            get() {
-                return isPanelInit && isToastInit
+    @Keep
+    @JvmStatic
+    fun getMetaBoolean(context: Context, key: String, def: Boolean): Boolean {
+        try {
+            val metaData = context.packageManager.getApplicationInfo(
+                context.packageName,
+                PackageManager.GET_META_DATA
+            ).metaData
+            if (metaData.containsKey(key)) {
+                return metaData.getBoolean(key, def)
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return def
     }
 
 }

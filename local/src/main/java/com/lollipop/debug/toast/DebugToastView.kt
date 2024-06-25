@@ -178,7 +178,7 @@ class DebugToastView(context: Context) : FrameLayout(context), DebugToastHelper.
 
     }
 
-    class ToastInfo(
+    private class ToastInfo(
         val value: String
     )
 

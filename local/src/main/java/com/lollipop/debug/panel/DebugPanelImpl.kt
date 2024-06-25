@@ -69,6 +69,14 @@ data object DebugPanelImpl : DPanel.DebugPanel {
         }
     }
 
+    fun addListener(listener: OnPageChangedListener) {
+        listenerManager.add(listener)
+    }
+
+    fun removeListener(listener: OnPageChangedListener) {
+        listenerManager.remove(listener)
+    }
+
     interface OnPageChangedListener {
         fun onPageAdd(index: Int)
         fun onPageRemove(index: Int)

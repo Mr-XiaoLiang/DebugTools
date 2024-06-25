@@ -3,4 +3,13 @@
     <color name="debugPanelBackground">#FFFFFFFF</color>
     <color name="debugPanelTabText">#005064</color>
     <color name="debugPanelTabClose">#475E64</color>
+    <color name="debugToastHistoryTitle">#333</color>
+    <color name="debugToastHistoryTime">#0095BC</color>
+    <color name="debugToastHistoryDetail">#666</color>
+    <color name="debugToastHistoryLine">#888</color>
+
+    <color name="debugRefreshLayoutColorScheme1">#D73737</color>
+    <color name="debugRefreshLayoutColorScheme2">#7AD737</color>
+    <color name="debugRefreshLayoutColorScheme3">#37C4D7</color>
+    <color name="debugRefreshLayoutColorScheme4">#4F37D7</color>
 </resources>

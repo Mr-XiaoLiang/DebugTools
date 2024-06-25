@@ -12,10 +12,17 @@ class DebugStaticPanelPageInfo(
 
     override fun onItemChanged() {
         changeMode++
+        onPageChangedListener?.onPageChanged()
     }
+
+    var onPageChangedListener: OnPageChangedListener? = null
 
     override fun createGroup(id: String, name: String): BasicDebugStaticGroupInfo {
         return DebugStaticPanelGroupInfo(id, name) { onItemChanged() }
+    }
+
+    interface OnPageChangedListener {
+        fun onPageChanged()
     }
 
 }
