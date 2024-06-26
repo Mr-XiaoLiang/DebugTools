@@ -12,4 +12,7 @@
     <color name="debugRefreshLayoutColorScheme2">#7AD737</color>
     <color name="debugRefreshLayoutColorScheme3">#37C4D7</color>
     <color name="debugRefreshLayoutColorScheme4">#4F37D7</color>
+
+    <color name="debugHomeItemBackground">#93C9D7</color>
+    <color name="debugHomeItemText">#003745</color>
 </resources>

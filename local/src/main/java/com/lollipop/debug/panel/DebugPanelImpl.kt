@@ -18,6 +18,10 @@ data object DebugPanelImpl : DPanel.DebugPanel {
             return pageList
         }
 
+    fun getAllPages(): List<DebugPanelPageInfo> {
+        return pageMap.values.toList()
+    }
+
     private fun register(descriptor: DebugPanelPageInfo) {
         pageMap[descriptor.id] = descriptor
     }
