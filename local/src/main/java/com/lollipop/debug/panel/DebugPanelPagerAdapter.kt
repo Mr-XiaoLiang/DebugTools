@@ -5,10 +5,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.lollipop.debug.local.databinding.DebugPanelPageHomeBinding
 import com.lollipop.debug.local.databinding.DebugPanelPageListBinding
+import com.lollipop.debug.local.databinding.DebugPanelPageStaticBinding
 import com.lollipop.debug.local.databinding.DebugPanelPageToastHistoryBinding
 import com.lollipop.debug.panel.pager.DebugHomePagerHolder
 import com.lollipop.debug.panel.pager.DebugListPagerHolder
 import com.lollipop.debug.panel.pager.DebugPagerHolder
+import com.lollipop.debug.panel.pager.DebugStaticPagerHolder
 import com.lollipop.debug.panel.pager.DebugToastHistoryPagerHolder
 
 class DebugPanelPagerAdapter(val data: List<DebugPanelPageDescriptor>) :
@@ -50,7 +52,13 @@ class DebugPanelPagerAdapter(val data: List<DebugPanelPageDescriptor>) :
 
             else -> {
                 // static page
-                TODO("Not yet implemented")
+                return DebugStaticPagerHolder(
+                    DebugPanelPageStaticBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    )
+                )
             }
         }
 
@@ -68,8 +76,13 @@ class DebugPanelPagerAdapter(val data: List<DebugPanelPageDescriptor>) :
                     holder.bind(info)
                 }
             }
+
+            is DebugStaticPagerHolder -> {
+                if (info is DebugPanelPageDescriptor.RemoteStatic) {
+                    holder.bind(info)
+                }
+            }
         }
-        TODO("Not yet implemented")
     }
 
     override fun getItemViewType(position: Int): Int {
