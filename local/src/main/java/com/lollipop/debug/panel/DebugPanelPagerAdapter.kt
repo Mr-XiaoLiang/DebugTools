@@ -4,8 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.lollipop.debug.local.databinding.DebugPanelPageHomeBinding
+import com.lollipop.debug.local.databinding.DebugPanelPageListBinding
 import com.lollipop.debug.local.databinding.DebugPanelPageToastHistoryBinding
 import com.lollipop.debug.panel.pager.DebugHomePagerHolder
+import com.lollipop.debug.panel.pager.DebugListPagerHolder
 import com.lollipop.debug.panel.pager.DebugPagerHolder
 import com.lollipop.debug.panel.pager.DebugToastHistoryPagerHolder
 
@@ -37,7 +39,13 @@ class DebugPanelPagerAdapter(val data: List<DebugPanelPageDescriptor>) :
 
             viewType >= DebugPanelPageDescriptor.LIST_PAGE_RANGE -> {
                 // list page
-                TODO("Not yet implemented")
+                return DebugListPagerHolder(
+                    DebugPanelPageListBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    )
+                )
             }
 
             else -> {
@@ -53,8 +61,13 @@ class DebugPanelPagerAdapter(val data: List<DebugPanelPageDescriptor>) :
     }
 
     override fun onBindViewHolder(holder: DebugPagerHolder, position: Int) {
+        val info = data[position]
         when (holder) {
-
+            is DebugListPagerHolder -> {
+                if (info is DebugPanelPageDescriptor.RemoteList) {
+                    holder.bind(info)
+                }
+            }
         }
         TODO("Not yet implemented")
     }
