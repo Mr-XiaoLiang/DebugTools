@@ -1,6 +1,6 @@
 package com.lollipop.debug.panel.staticpanel
 
-class DebugStaticButtonItemInfo(
+class DebugStaticPanelButtonItemInfo(
     id: String,
     name: String,
     var onClickListener: () -> Unit

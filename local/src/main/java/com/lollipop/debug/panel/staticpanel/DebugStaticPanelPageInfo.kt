@@ -21,7 +21,7 @@ class DebugStaticPanelPageInfo(
         return DebugStaticPanelGroupInfo(id, name) { onItemChanged() }
     }
 
-    interface OnPageChangedListener {
+    fun interface OnPageChangedListener {
         fun onPageChanged()
     }
 

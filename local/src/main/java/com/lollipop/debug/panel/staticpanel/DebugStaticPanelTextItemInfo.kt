@@ -1,6 +1,6 @@
 package com.lollipop.debug.panel.staticpanel
 
-class DebugStaticTextItemInfo(
+class DebugStaticPanelTextItemInfo(
     id: String,
     name: String,
     var value: String

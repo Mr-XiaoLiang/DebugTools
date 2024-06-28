@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/refreshLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginVertical="8dp"
+        android:background="@drawable/debug_bg_item_static_group"
+        android:elevation="3dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:textColor="@color/debugStaticButtonText"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        tools:text="Button\nButton">
+
+        <TextView
+            android:id="@+id/textLabelView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="4dp"
+            android:textColor="@color/debugStaticTextLabel"
+            android:textSize="14sp"
+            tools:text="Text Label" />
+
+        <TextView
+            android:id="@+id/textValueView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="12dp"
+            android:paddingBottom="4dp"
+            android:textColor="@color/debugStaticTextDetail"
+            android:textSize="16sp"
+            tools:text="Text\nValue" />
+
+    </LinearLayout>
+
+</FrameLayout>

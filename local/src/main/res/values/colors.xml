@@ -15,4 +15,14 @@
 
     <color name="debugHomeItemBackground">#93C9D7</color>
     <color name="debugHomeItemText">#003745</color>
+
+    <color name="debugStaticButtonDefault">#79CCE2</color>
+    <color name="debugStaticButtonPressed">#5EAEC3</color>
+    <color name="debugStaticButtonText">#3E3E3E</color>
+
+    <color name="debugStaticGroupStroke">#0095BC</color>
+    <color name="debugStaticGroupLabel">#E9E9E9</color>
+
+    <color name="debugStaticTextLabel">#0095BC</color>
+    <color name="debugStaticTextDetail">#494949</color>
 </resources>

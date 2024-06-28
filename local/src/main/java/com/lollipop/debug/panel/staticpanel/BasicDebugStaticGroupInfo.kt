@@ -61,14 +61,14 @@ abstract class BasicDebugStaticGroupInfo(
         onClickListener: () -> Unit
     ) {
         if (groupId.isEmpty() || groupId == currentId) {
-            val buttonItem = findItem<DebugStaticButtonItemInfo>(id)
+            val buttonItem = findItem<DebugStaticPanelButtonItemInfo>(id)
             if (buttonItem != null) {
                 buttonItem.onClickListener = onClickListener
                 buttonItem.name = name
                 onItemChanged()
                 return
             }
-            val newButtonItem = DebugStaticButtonItemInfo(id, name, onClickListener)
+            val newButtonItem = DebugStaticPanelButtonItemInfo(id, name, onClickListener)
             itemList.add(newButtonItem)
             onItemChanged()
             return
@@ -78,14 +78,14 @@ abstract class BasicDebugStaticGroupInfo(
 
     override fun text(id: String, groupId: String, name: String, value: String) {
         if (groupId.isEmpty() || groupId == currentId) {
-            val textItem = findItem<DebugStaticTextItemInfo>(id)
+            val textItem = findItem<DebugStaticPanelTextItemInfo>(id)
             if (textItem != null) {
                 textItem.value = value
                 textItem.name = name
                 onItemChanged()
                 return
             }
-            val newButtonItem = DebugStaticTextItemInfo(id, name, value)
+            val newButtonItem = DebugStaticPanelTextItemInfo(id, name, value)
             itemList.add(newButtonItem)
             onItemChanged()
             return
