@@ -44,5 +44,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.swiperefreshlayout)
     compileOnly(project(":lite"))
+    // 需要内置一个core模块，毕竟数据是必要的
+    implementation(project(":core"))
     implementation(project(":floating"))
 }

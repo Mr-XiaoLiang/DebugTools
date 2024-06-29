@@ -58,6 +58,7 @@ object DebugLocalOverlayImpl : DebugLocalBasicImpl() {
         val contentView = DebugPanelContentView(context)
         val overlayPanel =
             FloatingHelper.createOverlayPanel(context, PanelConfig(), contentView)
+        contentView.resume()
         val floatingPanel = overlayPanel.getOrNull()
         var isShown = false
         FloatingHelper.createOverlayIcon(context, DebugLocal.floatingButtonIcon, ButtonConfig()) {

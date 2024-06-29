@@ -3,28 +3,34 @@ package com.lollipop.debug.panel
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.widget.LinearLayout
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.lollipop.debug.local.databinding.DebugPanelContentBinding
 
 class DebugPanelContentView @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null
 ) : LinearLayout(context, attributeSet), DebugPanelImpl.OnPageChangedListener {
 
-    private val tabLayout = TabLayout(context)
-    private val viewPager = ViewPager2(context)
+    private val binding = DebugPanelContentBinding.inflate(LayoutInflater.from(context), this)
+    private val tabLayout: TabLayout
+        get() {
+            return binding.tabLayout
+        }
+    private val viewPager: ViewPager2
+        get() {
+            return binding.viewPager2
+        }
 
     private val dataList = DebugPanelImpl.pages
     private val adapter = DebugPanelPagerAdapter(dataList)
 
     init {
         orientation = VERTICAL
-        addView(tabLayout, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
-        addView(viewPager, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
         initView()
-
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -34,6 +40,11 @@ class DebugPanelContentView @JvmOverloads constructor(
     }
 
     fun destroy() {
+        DebugPanelImpl.removeListener(this)
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
         DebugPanelImpl.removeListener(this)
     }
 
