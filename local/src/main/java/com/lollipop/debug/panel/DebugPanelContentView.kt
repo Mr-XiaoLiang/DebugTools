@@ -39,6 +39,10 @@ class DebugPanelContentView @JvmOverloads constructor(
         adapter.notifyDataSetChanged()
     }
 
+    fun pause() {
+        DebugPanelImpl.removeListener(this)
+    }
+
     fun destroy() {
         DebugPanelImpl.removeListener(this)
     }

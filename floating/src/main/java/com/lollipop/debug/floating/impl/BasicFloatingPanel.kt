@@ -76,7 +76,7 @@ abstract class BasicFloatingPanel(
         if (closeOnlyHide) {
             hide()
         } else {
-            close()
+            closeFloating()
         }
     }
 
@@ -104,7 +104,7 @@ abstract class BasicFloatingPanel(
         savedStateRegistryController.onStop()
     }
 
-    override fun close() {
+    override fun closeFloating() {
         if (isClosed) {
             return
         }

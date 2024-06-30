@@ -11,8 +11,7 @@ import com.lollipop.debug.DebugLocal.hasOverlayPermission
 import com.lollipop.debug.DebugLocal.requestOverlayPermission
 import com.lollipop.debug.basic.DebugLocalBasicImpl
 import com.lollipop.debug.floating.FloatingHelper
-import com.lollipop.debug.floating.FloatingHelper.ButtonConfig
-import com.lollipop.debug.floating.FloatingHelper.PanelConfig
+import com.lollipop.debug.floating.creator.FloatingOverlayCreator
 import com.lollipop.debug.panel.DebugPanelContentView
 import com.lollipop.debug.toast.DebugToastView
 
@@ -20,10 +19,23 @@ object DebugLocalOverlayImpl : DebugLocalBasicImpl() {
 
     private var isRequestOverlayPermission = false
 
+    private var creatorImpl: FloatingOverlayCreator? = null
+
     override fun onInit(app: Application) {
+        creatorImpl = FloatingHelper.overlay(app)
         isRequestOverlayPermission = getMetaBoolean(
             app, KEY_REQUEST_OVERLAY_PERMISSION, false
         )
+    }
+
+    private fun creator(): FloatingOverlayCreator {
+        val impl = creatorImpl
+        if (impl != null) {
+            return impl
+        }
+        val newImpl = FloatingHelper.overlay(application!!)
+        creatorImpl = newImpl
+        return newImpl
     }
 
     override fun onActivityResumed(activity: Activity) {
@@ -35,7 +47,7 @@ object DebugLocalOverlayImpl : DebugLocalBasicImpl() {
             return
         }
         if (hasOverlayPermission(activity)) {
-            initDebugLocal(activity)
+            initDebugLocal(activity, creator())
             return
         }
         if (isRequestOverlayPermission) {
@@ -45,23 +57,22 @@ object DebugLocalOverlayImpl : DebugLocalBasicImpl() {
         }
     }
 
-    private fun initDebugLocal(activity: Activity) {
-        initPanel(activity)
-        initToast(activity)
+    private fun initDebugLocal(activity: Activity, c: FloatingOverlayCreator) {
+        initPanel(activity, c)
+        initToast(activity, c)
     }
 
-    private fun initPanel(activity: Activity) {
+    private fun initPanel(activity: Activity, c: FloatingOverlayCreator) {
         if (InitState.isPanelInit) {
             return
         }
         val context = activity.application
         val contentView = DebugPanelContentView(context)
-        val overlayPanel =
-            FloatingHelper.createOverlayPanel(context, PanelConfig(), contentView)
+        val overlayPanel = c.createPanel(content = contentView)
         contentView.resume()
         val floatingPanel = overlayPanel.getOrNull()
         var isShown = false
-        FloatingHelper.createOverlayIcon(context, DebugLocal.floatingButtonIcon, ButtonConfig()) {
+        c.createIcon(iconId = DebugLocal.floatingButtonIcon) {
             isShown = !isShown
             if (isShown) {
                 floatingPanel?.show()
@@ -72,20 +83,20 @@ object DebugLocalOverlayImpl : DebugLocalBasicImpl() {
         InitState.isPanelInit = true
     }
 
-    private fun initToast(activity: Activity) {
+    private fun initToast(activity: Activity, c: FloatingOverlayCreator) {
         if (InitState.isToastInit) {
             return
         }
         DebugToastHelper.init()
         DebugToastHelper.toastView?.let {
             if (it is View) {
-                FloatingHelper.removeViewFromWindow(it)
+                c.removeViewFromWindow(it)
             }
         }
         val context = activity.application
         val debugToastView = DebugToastView(context)
         DebugToastHelper.toastView = debugToastView
-        FloatingHelper.addViewToWindow(context, debugToastView, true) { m, v, p ->
+        c.addView(debugToastView) { m, v, p ->
             val screenSize = FloatingHelper.getScreenSize(m)
             p.width = (screenSize.width * 0.4F).toInt()
             p.height = (screenSize.height * 0.4F).toInt()

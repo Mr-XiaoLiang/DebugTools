@@ -1,11 +1,9 @@
 package com.lollipop.debug.floating
 
-interface FloatingButton {
+interface FloatingButton: FloatingCloseable {
 
     fun show()
 
     fun hide()
-
-    fun remove()
 
 }
