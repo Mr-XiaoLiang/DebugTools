@@ -157,8 +157,17 @@ class FloatingOverlayCreator(private val app: Application) : FloatingCreator() {
             p.flags = (WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
                     or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                     or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+            val screenSize = FloatingHelper.getScreenSize(m)
+            val halfWidth = screenSize.width / 2
+            val halfHeight = screenSize.height / 2
             v.setOnTouchListener(FloatingDragHelper { dx, dy ->
-                FloatingDragHelper.offsetView(v, m, dx, dy)
+                FloatingDragHelper.offsetView(
+                    v, m, dx, dy,
+                    halfWidth * -1,
+                    halfHeight * -1,
+                    halfWidth,
+                    halfHeight
+                )
             })
         }
         return floatingButton
@@ -238,11 +247,18 @@ class FloatingOverlayCreator(private val app: Application) : FloatingCreator() {
                 p.y -= (oldHeight - p.height) / 2
                 m.updateViewLayout(v, p)
             }
-
-            viewHolder.setHolderTouchListener(
-                FloatingDragHelper { dx, dy ->
-                    FloatingDragHelper.offsetView(v, m, dx, dy)
-                }
+            val halfWidth = screenSize.width / 2
+            val halfHeight = screenSize.height / 2
+            viewHolder.setHolderTouchListener(FloatingDragHelper { dx, dy ->
+                val halfPanelHeight = p.height / 2
+                FloatingDragHelper.offsetView(
+                    v, m, dx, dy,
+                    halfWidth * -1,
+                    halfHeight * -1 + halfPanelHeight,
+                    halfWidth,
+                    halfHeight
+                )
+            }
             )
         }
         panelImpl.setHideOnBackground(hideOnBackground)

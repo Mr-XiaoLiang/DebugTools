@@ -5,7 +5,9 @@ import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
+import android.view.ViewGroup
 import android.view.WindowManager
+import androidx.core.view.updateLayoutParams
 import kotlin.math.abs
 
 class FloatingDragHelper(
@@ -13,21 +15,65 @@ class FloatingDragHelper(
 ) : View.OnTouchListener {
 
     companion object {
-        fun offsetView(view: View, windowManager: WindowManager, offsetX: Int, offsetY: Int) {
+        fun offsetView(
+            view: View,
+            windowManager: WindowManager,
+            offsetX: Int,
+            offsetY: Int,
+            minX: Int,
+            minY: Int,
+            maxX: Int,
+            maxY: Int
+        ) {
             val layoutParams = view.layoutParams ?: return
-            when (layoutParams) {
-                is WindowManager.LayoutParams -> {
-                    layoutParams.x += offsetX
-                    layoutParams.y += offsetY
-                    windowManager.updateViewLayout(view, layoutParams)
+            if (layoutParams is WindowManager.LayoutParams) {
+                layoutParams.x += offsetX
+                layoutParams.y += offsetY
+                if (layoutParams.x < minX) {
+                    layoutParams.x = minX
                 }
+                if (layoutParams.x > maxX) {
+                    layoutParams.x = maxX
+                }
+                if (layoutParams.y < minY) {
+                    layoutParams.y = minY
+                }
+                if (layoutParams.y > maxY) {
+                    layoutParams.y = maxY
+                }
+                windowManager.updateViewLayout(view, layoutParams)
+            }
+        }
 
-                else -> {
-                    view.offsetLeftAndRight(offsetX)
-                    view.offsetTopAndBottom(offsetY)
+        fun offsetView(
+            view: View,
+            offsetX: Int,
+            offsetY: Int,
+            minX: Int,
+            minY: Int,
+            maxX: Int,
+            maxY: Int
+        ) {
+            view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin += offsetX
+                topMargin += offsetY
+                val left = view.left + offsetX
+                val top = view.top + offsetY
+                if (left < minX) {
+                    leftMargin += minX - left
+                }
+                if (left > maxX) {
+                    leftMargin += maxX - left
+                }
+                if (top < minY) {
+                    topMargin += minY - top
+                }
+                if (top > maxY) {
+                    topMargin += maxY - top
                 }
             }
         }
+
     }
 
     private var lastTouchX = 0F

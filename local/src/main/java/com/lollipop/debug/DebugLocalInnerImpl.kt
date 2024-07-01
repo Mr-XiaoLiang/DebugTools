@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.Application
 import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -15,25 +14,11 @@ import com.lollipop.debug.floating.creator.FloatingInnerCreator
 import com.lollipop.debug.floating.impl.VisibleStateGroup
 import com.lollipop.debug.panel.DebugPanelContentView
 import com.lollipop.debug.toast.DebugToastView
-import java.util.LinkedList
 
 object DebugLocalInnerImpl : DebugLocalBasicImpl() {
 
     private inline fun <reified T : View> findView(activity: Activity): T? {
-        val pending = LinkedList<View>()
-        pending.addLast(activity.findViewById(android.R.id.content))
-        while (pending.isNotEmpty()) {
-            val view = pending.removeFirst()
-            if (view is T) {
-                return view
-            }
-            if (view is ViewGroup) {
-                for (i in 0 until view.childCount) {
-                    pending.addLast(view.getChildAt(i))
-                }
-            }
-        }
-        return null
+        return FloatingInnerCreator.findView(activity)
     }
 
     override fun onInit(app: Application) {
