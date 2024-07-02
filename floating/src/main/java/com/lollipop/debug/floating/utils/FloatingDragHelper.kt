@@ -7,71 +7,26 @@ import android.view.View
 import android.view.ViewConfiguration
 import android.view.ViewGroup
 import android.view.WindowManager
+import androidx.core.view.ViewCompat
 import androidx.core.view.updateLayoutParams
 import kotlin.math.abs
 
 class FloatingDragHelper(
-    val moveTo: (Int, Int) -> Unit
+    val offsetController: OffsetController
 ) : View.OnTouchListener {
 
     companion object {
         fun offsetView(
             view: View,
             windowManager: WindowManager,
-            offsetX: Int,
-            offsetY: Int,
-            minX: Int,
-            minY: Int,
-            maxX: Int,
-            maxY: Int
-        ) {
-            val layoutParams = view.layoutParams ?: return
-            if (layoutParams is WindowManager.LayoutParams) {
-                layoutParams.x += offsetX
-                layoutParams.y += offsetY
-                if (layoutParams.x < minX) {
-                    layoutParams.x = minX
-                }
-                if (layoutParams.x > maxX) {
-                    layoutParams.x = maxX
-                }
-                if (layoutParams.y < minY) {
-                    layoutParams.y = minY
-                }
-                if (layoutParams.y > maxY) {
-                    layoutParams.y = maxY
-                }
-                windowManager.updateViewLayout(view, layoutParams)
-            }
+        ): WindowOffsetHelper {
+            return WindowOffsetHelper(view, windowManager)
         }
 
         fun offsetView(
             view: View,
-            offsetX: Int,
-            offsetY: Int,
-            minX: Int,
-            minY: Int,
-            maxX: Int,
-            maxY: Int
-        ) {
-            view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                leftMargin += offsetX
-                topMargin += offsetY
-                val left = view.left + offsetX
-                val top = view.top + offsetY
-                if (left < minX) {
-                    leftMargin += minX - left
-                }
-                if (left > maxX) {
-                    leftMargin += maxX - left
-                }
-                if (top < minY) {
-                    topMargin += minY - top
-                }
-                if (top > maxY) {
-                    topMargin += maxY - top
-                }
-            }
+        ): ViewOffsetHelper {
+            return ViewOffsetHelper(view)
         }
 
     }
@@ -134,7 +89,7 @@ class FloatingDragHelper(
                     "FloatingDragListener",
                     "MOVE: [$x, $y] ==> [$oxi, $oyi]"
                 )
-                moveTo(oxi, oyi)
+                offsetController.offset(oxi, oyi)
             }
 
             MotionEvent.ACTION_UP -> {
@@ -161,6 +116,162 @@ class FloatingDragHelper(
             }
         }
         return dragEnable
+    }
+
+    fun interface OffsetController {
+        fun offset(offsetX: Int, offsetY: Int)
+    }
+
+    class ViewOffsetHelper(private val view: View) : OffsetController {
+        private var topEdge = 0
+        private var leftEdge = 0
+        private var rightEdge = 0
+        private var bottomEdge = 0
+
+        private var minX: Int = 0
+        private var minY: Int = 0
+        private var maxX: Int = 0
+        private var maxY: Int = 0
+
+        fun setBounds(minX: Int, minY: Int, maxX: Int, maxY: Int) {
+            this.minX = minX
+            this.minY = minY
+            this.maxX = maxX
+            this.maxY = maxY
+            offset(0, 0)
+        }
+
+        fun bindParentBounds() {
+            val parent = view.parent
+            if (parent is View) {
+                parent.addOnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
+                    val viewWidth = view.width
+                    val viewHeight = view.height
+                    setBounds(
+                        0,
+                        0,
+                        if (parent is ViewGroup) {
+                            parent.width - viewWidth
+                        } else {
+                            Int.MAX_VALUE
+                        },
+                        if (parent is ViewGroup) {
+                            parent.height - viewHeight
+                        } else {
+                            Int.MAX_VALUE
+                        }
+                    )
+                    offset(0, 0)
+                }
+            }
+        }
+
+        fun setInsets(left: Int, top: Int, right: Int, bottom: Int) {
+            this.topEdge = top
+            this.leftEdge = left
+            this.rightEdge = right
+            this.bottomEdge = bottom
+            offset(0, 0)
+        }
+
+        fun bindWindowInsets(insertsType: Int) {
+            ViewCompat.setOnApplyWindowInsetsListener(view) { v, inserts ->
+                val systemBars = inserts.getInsets(insertsType)
+                setInsets(
+                    systemBars.top,
+                    systemBars.left,
+                    systemBars.right,
+                    systemBars.bottom,
+                )
+                offset(0, 0)
+                inserts
+            }
+        }
+
+        override fun offset(offsetX: Int, offsetY: Int) {
+            view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin += offsetX
+                topMargin += offsetY
+                val left = view.left + offsetX
+                val top = view.top + offsetY
+                val minXOffset = minX + leftEdge
+                val minYOffset = minY + topEdge
+                val maxXOffset = maxX - rightEdge
+                val maxYOffset = maxY - bottomEdge
+
+                if (left < minXOffset) {
+                    leftMargin += minXOffset - left
+                }
+                if (left > maxXOffset) {
+                    leftMargin += maxXOffset - left
+                }
+                if (top < minYOffset) {
+                    topMargin += minYOffset - top
+                }
+                if (top > maxYOffset) {
+                    topMargin += maxYOffset - top
+                }
+            }
+        }
+
+    }
+
+    class WindowOffsetHelper(
+        private val view: View,
+        private val windowManager: WindowManager
+    ) : OffsetController {
+        private var topEdge = 0
+        private var leftEdge = 0
+        private var rightEdge = 0
+        private var bottomEdge = 0
+
+        private var minX: Int = 0
+        private var minY: Int = 0
+        private var maxX: Int = 0
+        private var maxY: Int = 0
+
+        fun setBounds(minX: Int, minY: Int, maxX: Int, maxY: Int) {
+            this.minX = minX
+            this.minY = minY
+            this.maxX = maxX
+            this.maxY = maxY
+            offset(0, 0)
+        }
+
+        fun setInsets(left: Int, top: Int, right: Int, bottom: Int) {
+            this.topEdge = top
+            this.leftEdge = left
+            this.rightEdge = right
+            this.bottomEdge = bottom
+            offset(0, 0)
+        }
+
+        override fun offset(offsetX: Int, offsetY: Int) {
+            val layoutParams = view.layoutParams ?: return
+            if (layoutParams is WindowManager.LayoutParams) {
+                layoutParams.x += offsetX
+                layoutParams.y += offsetY
+
+                val minXOffset = minX + leftEdge
+                val minYOffset = minY + topEdge
+                val maxXOffset = maxX - rightEdge
+                val maxYOffset = maxY - bottomEdge
+
+                if (layoutParams.x < minXOffset) {
+                    layoutParams.x = minXOffset
+                }
+                if (layoutParams.x > maxXOffset) {
+                    layoutParams.x = maxXOffset
+                }
+                if (layoutParams.y < minYOffset) {
+                    layoutParams.y = minYOffset
+                }
+                if (layoutParams.y > maxYOffset) {
+                    layoutParams.y = maxYOffset
+                }
+                windowManager.updateViewLayout(view, layoutParams)
+            }
+        }
     }
 
 }

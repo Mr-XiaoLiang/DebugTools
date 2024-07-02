@@ -18,6 +18,8 @@ class FloatingButtonImpl(
         }
     }
 
+    var buttonCloseCallback: ((FloatingButtonImpl) -> Unit)? = null
+
     override fun show() {
         view.isVisible = true
     }
@@ -26,16 +28,17 @@ class FloatingButtonImpl(
         view.isInvisible = true
     }
 
+    override fun closeFloating() {
+        ProcessLifecycleOwner.get().lifecycle.removeObserver(hideOnBackgroundObserver)
+        buttonCloseCallback?.invoke(this)
+    }
+
     fun setHideOnBackground(enable: Boolean) {
         if (enable) {
             ProcessLifecycleOwner.get().lifecycle.addObserver(hideOnBackgroundObserver)
         } else {
             ProcessLifecycleOwner.get().lifecycle.removeObserver(hideOnBackgroundObserver)
         }
-    }
-
-    override fun remove() {
-        ProcessLifecycleOwner.get().lifecycle.removeObserver(hideOnBackgroundObserver)
     }
 
 }

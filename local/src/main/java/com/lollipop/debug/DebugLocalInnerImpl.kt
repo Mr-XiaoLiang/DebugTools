@@ -69,14 +69,17 @@ object DebugLocalInnerImpl : DebugLocalBasicImpl() {
                 }
             })
         }
-        val floatingPanel = overlayPanel.getOrNull()
+        val floatingPanel = overlayPanel.getOrNull() ?: return
+        contentView.post {
+            floatingPanel.hide()
+        }
         var isShown = false
         creator.createIcon(iconId = DebugLocal.floatingButtonIcon) {
             isShown = !isShown
             if (isShown) {
-                floatingPanel?.show()
+                floatingPanel.show()
             } else {
-                floatingPanel?.hide()
+                floatingPanel.hide()
             }
         }
     }
@@ -89,7 +92,7 @@ object DebugLocalInnerImpl : DebugLocalBasicImpl() {
             DebugToastHelper.init()
             val debugToastView = DebugToastView(activity)
             DebugToastHelper.toastView = debugToastView
-            creator.addView(debugToastView) { p ->
+            creator.addView(debugToastView) { g, v, p ->
                 val screenSize = FloatingHelper.getWindowSize(activity.window)
                 p.width = (screenSize.width * 0.4F).toInt()
                 p.height = (screenSize.height * 0.4F).toInt()

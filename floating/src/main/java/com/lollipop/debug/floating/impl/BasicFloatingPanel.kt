@@ -60,7 +60,9 @@ abstract class BasicFloatingPanel(
     }
 
     init {
-        initPanel()
+        view.post {
+            initPanel()
+        }
     }
 
     private fun initPanel() {

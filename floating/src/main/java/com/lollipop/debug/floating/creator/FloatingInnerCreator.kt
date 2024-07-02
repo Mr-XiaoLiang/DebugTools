@@ -10,6 +10,8 @@ import android.view.ViewManager
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.compose.runtime.Composable
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import com.lollipop.debug.floating.FloatingButton
 import com.lollipop.debug.floating.FloatingPanel
@@ -165,17 +167,11 @@ class FloatingInnerCreator(val activity: Activity) : FloatingCreator() {
                 height = (groupHeight * heightWeight).toInt()
             }
         }
-        val halfWidth = view.width
-        val halfHeight = view.parentHeight(Int.MAX_VALUE)
-        viewHolder.setHolderTouchListener(FloatingDragHelper { dx, dy ->
-            FloatingDragHelper.offsetView(
-                view, dx, dy,
-                halfWidth * -1,
-                0,
-                halfWidth,
-                halfHeight
-            )
-        })
+
+        val offsetHelper = FloatingDragHelper.offsetView(view)
+        view.post { offsetHelper.bindParentBounds() }
+        offsetHelper.bindWindowInsets(WindowInsetsCompat.Type.systemBars())
+        viewHolder.setHolderTouchListener(FloatingDragHelper(offsetHelper))
         panelImpl.setHideOnBackground(hideOnBackground)
         panelImpl.setCloseOnlyHide(closeOnlyHide)
         return panelImpl
@@ -201,6 +197,9 @@ class FloatingInnerCreator(val activity: Activity) : FloatingCreator() {
         config: FloatingButtonConfig,
     ): FloatingButton {
         val floatingButton = FloatingButtonImpl(button)
+        floatingButton.buttonCloseCallback = {
+            removeViewFromParent(floatingButton.view)
+        }
         floatingButton.setHideOnBackground(config.hideOnBackground)
         val iconWidth = TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
@@ -217,26 +216,10 @@ class FloatingInnerCreator(val activity: Activity) : FloatingCreator() {
             p.height = iconHeight
             p.gravity = 0
         }
-        floatingButton.view.setOnTouchListener(FloatingDragHelper { dx, dy ->
-            val parent = floatingButton.view.parent
-            FloatingDragHelper.offsetView(
-                floatingButton.view,
-                dx,
-                dy,
-                0,
-                0,
-                if (parent is ViewGroup) {
-                    parent.width - iconWidth
-                } else {
-                    Int.MAX_VALUE
-                },
-                if (parent is ViewGroup) {
-                    parent.height - iconHeight
-                } else {
-                    Int.MAX_VALUE
-                }
-            )
-        })
+        val offsetHelper = FloatingDragHelper.offsetView(floatingButton.view)
+        floatingButton.view.post { offsetHelper.bindParentBounds() }
+        offsetHelper.bindWindowInsets(WindowInsetsCompat.Type.systemBars())
+        floatingButton.view.setOnTouchListener(FloatingDragHelper(offsetHelper))
         return floatingButton
     }
 
