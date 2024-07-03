@@ -10,7 +10,6 @@ import android.view.ViewManager
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.compose.runtime.Composable
-import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import com.lollipop.debug.floating.FloatingButton
@@ -145,6 +144,8 @@ class FloatingInnerCreator(val activity: Activity) : FloatingCreator() {
             p.width = (groupWidth * maxWidthWight).toInt()
             p.height = (groupHeight * heightWeight).toInt()
             p.gravity = 0
+            p.topMargin = (groupHeight - p.height) / 2
+            p.leftMargin = (groupWidth - p.width) / 2
         }
         viewHolder.setOnUpClickListener {
             val groupHeight = view.parentHeight((view.height / heightWeight).toInt())
@@ -212,9 +213,13 @@ class FloatingInnerCreator(val activity: Activity) : FloatingCreator() {
             context.resources.displayMetrics
         ).toInt()
         addView(floatingButton.view) { r, v, p ->
+            val groupWidth = r.width
+            val groupHeight = r.height
             p.width = iconWidth
             p.height = iconHeight
             p.gravity = 0
+            p.topMargin = (groupHeight - p.height) / 2
+            p.leftMargin = (groupWidth - p.width) / 2
         }
         val offsetHelper = FloatingDragHelper.offsetView(floatingButton.view)
         floatingButton.view.post { offsetHelper.bindParentBounds() }
