@@ -8,7 +8,6 @@ import android.view.ViewConfiguration
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.core.view.ViewCompat
-import androidx.core.view.updateLayoutParams
 import kotlin.math.abs
 
 class FloatingDragHelper(
@@ -141,22 +140,27 @@ class FloatingDragHelper(
             offset(0, 0)
         }
 
-        fun bindParentBounds() {
+        fun bindParentBounds(
+            leftOffsetWeight: Float = 0F,
+            topOffsetWeight: Float = 0F,
+            rightOffsetWeight: Float = 0F,
+            bottomOffsetWeight: Float = 0F
+        ) {
             val parent = view.parent
             if (parent is View) {
                 parent.addOnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
                     val viewWidth = view.width
                     val viewHeight = view.height
                     setBounds(
-                        0,
-                        0,
+                        (leftOffsetWeight * viewWidth).toInt(),
+                        (topOffsetWeight * viewHeight).toInt(),
                         if (parent is ViewGroup) {
-                            parent.width - viewWidth
+                            parent.width + (rightOffsetWeight * viewWidth).toInt()
                         } else {
                             Int.MAX_VALUE
                         },
                         if (parent is ViewGroup) {
-                            parent.height - viewHeight
+                            parent.height + (bottomOffsetWeight * viewHeight).toInt()
                         } else {
                             Int.MAX_VALUE
                         }
@@ -189,29 +193,54 @@ class FloatingDragHelper(
         }
 
         override fun offset(offsetX: Int, offsetY: Int) {
-            view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                leftMargin += offsetX
-                topMargin += offsetY
-                val left = view.left + offsetX
-                val top = view.top + offsetY
-                val minXOffset = minX + leftEdge
-                val minYOffset = minY + topEdge
-                val maxXOffset = maxX - rightEdge
-                val maxYOffset = maxY - bottomEdge
+//            view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+//                leftMargin += offsetX
+//                topMargin += offsetY
+//                val left = view.left + offsetX
+//                val top = view.top + offsetY
+//                val minXOffset = minX + leftEdge
+//                val minYOffset = minY + topEdge
+//                val maxXOffset = maxX - rightEdge
+//                val maxYOffset = maxY - bottomEdge
+//
+//                if (left < minXOffset) {
+//                    leftMargin += minXOffset - left
+//                }
+//                if (left > maxXOffset) {
+//                    leftMargin += maxXOffset - left
+//                }
+//                if (top < minYOffset) {
+//                    topMargin += minYOffset - top
+//                }
+//                if (top > maxYOffset) {
+//                    topMargin += maxYOffset - top
+//                }
+//            }
+            var leftMargin = view.translationX
+            var topMargin = view.translationY
+            leftMargin += offsetX
+            topMargin += offsetY
+            val left = view.left + leftMargin
+            val top = view.top + topMargin
+            val minXOffset = minX + leftEdge
+            val minYOffset = minY + topEdge
+            val maxXOffset = maxX - rightEdge - view.width
+            val maxYOffset = maxY - bottomEdge - view.height
 
-                if (left < minXOffset) {
-                    leftMargin += minXOffset - left
-                }
-                if (left > maxXOffset) {
-                    leftMargin += maxXOffset - left
-                }
-                if (top < minYOffset) {
-                    topMargin += minYOffset - top
-                }
-                if (top > maxYOffset) {
-                    topMargin += maxYOffset - top
-                }
+            if (left < minXOffset) {
+                leftMargin += minXOffset - left
             }
+            if (left > maxXOffset) {
+                leftMargin += maxXOffset - left
+            }
+            if (top < minYOffset) {
+                topMargin += minYOffset - top
+            }
+            if (top > maxYOffset) {
+                topMargin += maxYOffset - top
+            }
+            view.translationX = leftMargin
+            view.translationY = topMargin
         }
 
     }

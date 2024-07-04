@@ -170,7 +170,7 @@ class FloatingInnerCreator(val activity: Activity) : FloatingCreator() {
         }
 
         val offsetHelper = FloatingDragHelper.offsetView(view)
-        view.post { offsetHelper.bindParentBounds() }
+        view.post { offsetHelper.bindParentBounds(-0.4F, 0.1F, 0.4F, 0.8F) }
         offsetHelper.bindWindowInsets(WindowInsetsCompat.Type.systemBars())
         viewHolder.setHolderTouchListener(FloatingDragHelper(offsetHelper))
         panelImpl.setHideOnBackground(hideOnBackground)

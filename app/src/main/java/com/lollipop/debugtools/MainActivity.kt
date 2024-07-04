@@ -16,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.lollipop.debug.DPanel
 import com.lollipop.debug.DToast
 import com.lollipop.debug.DebugLocal
 import com.lollipop.debugtools.ui.theme.DebugToolsTheme
@@ -35,6 +36,19 @@ class MainActivity : ComponentActivity() {
             }
         }
         DebugLocal.init(application)
+        DPanel.panel("AA").apply {
+            button("b", "", "BB") {
+                DToast.show("HeiHei")
+            }
+        }
+        DPanel.panel("BB").apply {
+            button("c", "", "CC") {
+                DToast.show("?????")
+            }
+            group("g", "Group").button("dd", "", "DD") {
+                DToast.show("XXXXX")
+            }
+        }
     }
 
 }
