@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.lollipop.debug.local.R
-import com.lollipop.debug.local.databinding.DebugItemPageHomeBinding
+import com.lollipop.debug.local.databinding.DebugItemStaticButtonBinding
 import com.lollipop.debug.local.databinding.DebugPanelPageHomeBinding
 import com.lollipop.debug.panel.DebugPanelImpl
 
@@ -61,7 +61,7 @@ class DebugHomePagerHolder(
     ) : RecyclerView.Adapter<MenuItem>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MenuItem {
             return MenuItem(
-                DebugItemPageHomeBinding.inflate(
+                DebugItemStaticButtonBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -89,12 +89,12 @@ class DebugHomePagerHolder(
     }
 
     private class MenuItem(
-        val binding: DebugItemPageHomeBinding,
+        val binding: DebugItemStaticButtonBinding,
         val onItemClick: (Int) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 
         init {
-            binding.itemButtonCard.setOnClickListener {
+            binding.buttonView.setOnClickListener {
                 onClick()
             }
         }
@@ -104,7 +104,7 @@ class DebugHomePagerHolder(
         }
 
         fun bind(info: MenuInfo) {
-            binding.itemButtonText.text = info.name
+            binding.buttonView.text = info.name
         }
 
     }

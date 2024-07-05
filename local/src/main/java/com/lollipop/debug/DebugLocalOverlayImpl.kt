@@ -87,7 +87,6 @@ object DebugLocalOverlayImpl : DebugLocalBasicImpl() {
         if (InitState.isToastInit) {
             return
         }
-        DebugToastHelper.init()
         DebugToastHelper.toastView?.let {
             if (it is View) {
                 c.removeViewFromWindow(it)

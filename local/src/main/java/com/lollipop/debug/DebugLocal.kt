@@ -9,16 +9,24 @@ import android.os.Build
 import android.provider.Settings
 import androidx.annotation.Keep
 import com.lollipop.debug.local.R
+import com.lollipop.debug.panel.DebugPanelImpl
 
 @Keep
 object DebugLocal {
 
-    var isOverlayMode = false
+    @Keep
+    @JvmStatic
+    var panelMode: PanelMode = PanelMode.AUTO
+        private set
 
+    @Keep
+    @JvmStatic
     var floatingButtonIcon = R.mipmap.debug_ic_fab
 
     const val KEY_REQUEST_OVERLAY_PERMISSION = "com.lollipop.debug.overlay.request"
 
+    @Keep
+    @JvmStatic
     fun hasOverlayPermission(context: Context): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             return Settings.canDrawOverlays(context)
@@ -26,6 +34,8 @@ object DebugLocal {
         return true
     }
 
+    @Keep
+    @JvmStatic
     fun requestOverlayPermission(context: Context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return
@@ -38,10 +48,42 @@ object DebugLocal {
         context.startActivity(intent)
     }
 
+    private fun checkPanelMode(application: Application): PanelMode {
+        if (PanelMode.AUTO == panelMode) {
+            panelMode = if (hasOverlayPermission(application)) {
+                PanelMode.OVERLAY
+            } else {
+                PanelMode.INNER
+            }
+            return panelMode
+        }
+        return panelMode
+    }
+
+    @Keep
+    @JvmStatic
+    fun setPanelInnerMode() {
+        if (panelMode != PanelMode.AUTO) {
+            return
+        }
+        panelMode = PanelMode.INNER
+    }
+
+    @Keep
+    @JvmStatic
+    fun setPanelOverlayMode() {
+        if (panelMode != PanelMode.AUTO) {
+            return
+        }
+        panelMode = PanelMode.OVERLAY
+    }
+
     @Keep
     @JvmStatic
     fun init(application: Application) {
-        if (isOverlayMode) {
+        DToast.implements = DebugToastHelper
+        DPanel.implements = DebugPanelImpl
+        if (checkPanelMode(application) == PanelMode.OVERLAY) {
             DebugLocalOverlayImpl.init(application)
         } else {
             DebugLocalInnerImpl.init(application)
@@ -80,6 +122,12 @@ object DebugLocal {
             e.printStackTrace()
         }
         return def
+    }
+
+    enum class PanelMode {
+        AUTO,
+        INNER,
+        OVERLAY
     }
 
 }

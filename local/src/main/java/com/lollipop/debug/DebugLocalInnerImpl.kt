@@ -89,7 +89,6 @@ object DebugLocalInnerImpl : DebugLocalBasicImpl() {
         if (currentToastView != null) {
             DebugToastHelper.toastView = currentToastView
         } else {
-            DebugToastHelper.init()
             val debugToastView = DebugToastView(activity)
             DebugToastHelper.toastView = debugToastView
             creator.addView(debugToastView) { g, v, p ->

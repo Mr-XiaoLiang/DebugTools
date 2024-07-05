@@ -132,6 +132,9 @@ class DebugStaticPagerHolder(
             }
         }
         val pageInfo = info.info
+        if (pageInfo !== currentPanelInfo) {
+            contentGroup.removeAllViews()
+        }
         currentPanelInfo = pageInfo
         pageInfo.onPageChangedListener = null
         buildContent(pageInfo)
@@ -148,9 +151,11 @@ class DebugStaticPagerHolder(
             // 没有变化不要反复刷新
             return
         }
+        contentGroup.removeAllViews()
         val groupStateHelper = GroupStateHelper.panel(info.id)
         val layoutInflater = LayoutInflater.from(binding.root.context)
         childBuild(layoutInflater, contentGroup, info.itemList, groupStateHelper)
+        currentMode = info.changeMode
     }
 
 }
