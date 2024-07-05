@@ -10,9 +10,12 @@
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
-        android:theme="@style/Theme.AppCompat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:elevation="6dp"
+        android:paddingTop="@dimen/l_debug_floating_panel_option_bar_height"
+        android:theme="@style/Theme.AppCompat"
         app:tabMode="scrollable" />
 
     <androidx.viewpager2.widget.ViewPager2

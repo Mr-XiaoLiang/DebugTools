@@ -9,7 +9,10 @@ data object DebugPanelImpl : DPanel.DebugPanel {
 
     private val pageMap = HashMap<String, DebugPanelPageInfo>()
 
-    private val pageList = ArrayList<DebugPanelPageDescriptor>()
+    private val pageList = ArrayList<DebugPanelPageDescriptor>().apply {
+        add(DebugPanelPageDescriptor.Toast)
+        add(DebugPanelPageDescriptor.Main)
+    }
 
     private val listenerManager = ListenerManager<OnPageChangedListener>()
 

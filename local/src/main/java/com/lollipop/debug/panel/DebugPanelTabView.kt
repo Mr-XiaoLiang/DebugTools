@@ -1,6 +1,7 @@
 package com.lollipop.debug.panel
 
 import android.content.Context
+import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
@@ -48,6 +49,11 @@ class DebugPanelTabView @JvmOverloads constructor(
             tabBackground
         } else {
             null
+        }
+        binding.tabLabelView.typeface = if (selected) {
+            Typeface.DEFAULT_BOLD
+        } else {
+            Typeface.DEFAULT
         }
     }
 

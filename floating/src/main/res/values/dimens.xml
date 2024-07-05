@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="l_debug_floating_panel_option_bar_height">24dp</dimen>
+</resources>
