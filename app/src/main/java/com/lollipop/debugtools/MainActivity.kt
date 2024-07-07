@@ -44,9 +44,11 @@ class MainActivity : ComponentActivity() {
         DPanel.panel("BB").apply {
             button("c", "", "CC") {
                 DToast.show("?????")
+                DPanel.navigate("AA")
             }
             group("g", "Group").button("dd", "", "DD") {
                 DToast.show("XXXXX")
+                DPanel.navigate("CC")
             }
         }
     }

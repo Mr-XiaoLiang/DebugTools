@@ -2,6 +2,7 @@ package com.lollipop.debug.toast
 
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.ColorFilter
 import android.graphics.Paint
 import android.graphics.PixelFormat
@@ -36,7 +37,8 @@ class DebugToastView(context: Context) : FrameLayout(context), DebugToastHelper.
         if (toastList.isNotEmpty()) {
             toastList.removeFirst()
             adapter.notifyItemRemoved(0)
-        } else {
+        }
+        if (toastList.isEmpty()) {
             postHidePanel()
         }
     }
