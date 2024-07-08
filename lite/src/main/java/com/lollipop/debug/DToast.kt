@@ -1,13 +1,13 @@
 package com.lollipop.debug
 
-object DToast {
+import com.lollipop.debug.lite.LiteProxy
 
-    var implements: DebugToast? = null
+object DToast : LiteProxy<DToast.DebugToast>() {
 
     @JvmStatic
     @JvmOverloads
     fun show(text: String, detail: String = "") {
-        implements?.show(text, detail)
+        invoke { it.show(text, detail) }
     }
 
     interface DebugToast {

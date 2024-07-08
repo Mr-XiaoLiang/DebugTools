@@ -1,25 +1,24 @@
 package com.lollipop.debug
 
+import com.lollipop.debug.lite.LiteProxy
 import com.lollipop.debug.panel.DebugListPanelAdapter
 import com.lollipop.debug.panel.DebugListPanelPage
+import com.lollipop.debug.panel.DebugListPanelPageWrapper
 import com.lollipop.debug.panel.DebugStaticPanelPage
-import com.lollipop.debug.panel.EmptyDebugListPanelPage
-import com.lollipop.debug.panel.EmptyStaticPanelView
+import com.lollipop.debug.panel.DebugStaticPanelPageWrapper
 
-object DPanel {
-
-    var implements: DebugPanel? = null
+object DPanel : LiteProxy<DPanel.DebugPanel>() {
 
     fun panel(name: String): DebugStaticPanelPage {
-        return implements?.panel(name) ?: EmptyStaticPanelView
+        return DebugStaticPanelPageWrapper(implementsList.map { it.panel(name) })
     }
 
     fun list(name: String, adapter: DebugListPanelAdapter): DebugListPanelPage {
-        return implements?.list(name, adapter) ?: EmptyDebugListPanelPage
+        return DebugListPanelPageWrapper(implementsList.map { it.list(name, adapter) })
     }
 
     fun navigate(name: String) {
-        implements?.navigate(name)
+        implementsList.forEach { it.navigate(name) }
     }
 
     interface DebugPanel {

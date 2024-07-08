@@ -24,19 +24,3 @@ interface DebugListPanelAdapter {
 
 }
 
-data object EmptyDebugListPanelPage : DebugListPanelPage {
-
-    override fun reset(list: List<DebugListPanelItem>) {
-    }
-
-    override fun add(item: DebugListPanelItem) {
-    }
-
-    override fun remove(index: Int) {
-    }
-
-    override fun insert(index: Int, item: DebugListPanelItem) {
-    }
-
-}
-

@@ -1,10 +1,9 @@
 package com.lollipop.debug
 
 import com.lollipop.debug.http.RequestType
+import com.lollipop.debug.lite.LiteProxy
 
-object DHttp {
-
-    var implements: DebugHttp? = null
+object DHttp : LiteProxy<DHttp.DebugHttp>() {
 
     fun log(
         type: RequestType,
@@ -13,7 +12,7 @@ object DHttp {
         data: String,
         response: String
     ) {
-        implements?.log(type, url, header, data, response)
+        invoke { it.log(type, url, header, data, response) }
     }
 
     interface DebugHttp {

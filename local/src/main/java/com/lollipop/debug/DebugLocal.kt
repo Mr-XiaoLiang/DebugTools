@@ -81,8 +81,8 @@ object DebugLocal {
     @Keep
     @JvmStatic
     fun init(application: Application) {
-        DToast.implements = DebugToastHelper
-        DPanel.implements = DebugPanelImpl
+        DToast.register(DebugToastHelper)
+        DPanel.register(DebugPanelImpl)
         if (checkPanelMode(application) == PanelMode.OVERLAY) {
             DebugLocalOverlayImpl.init(application)
         } else {
