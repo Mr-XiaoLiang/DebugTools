@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import androidx.annotation.Keep
+import com.lollipop.debug.core.DebugCore
 import com.lollipop.debug.local.R
 import com.lollipop.debug.panel.DebugPanelImpl
 
@@ -81,6 +82,7 @@ object DebugLocal {
     @Keep
     @JvmStatic
     fun init(application: Application) {
+        DebugCore.init(application)
         DToast.register(DebugToastHelper)
         DPanel.register(DebugPanelImpl)
         if (checkPanelMode(application) == PanelMode.OVERLAY) {
