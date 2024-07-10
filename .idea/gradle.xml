@@ -17,6 +17,7 @@
             <option value="$PROJECT_DIR$/local" />
             <option value="$PROJECT_DIR$/remote" />
             <option value="$PROJECT_DIR$/router" />
+            <option value="$PROJECT_DIR$/share" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />
