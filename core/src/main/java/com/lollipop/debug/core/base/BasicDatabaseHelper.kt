@@ -58,9 +58,12 @@ abstract class BasicDatabaseHelper(
 
     }
 
-    protected class QuerySqlBuilder(
+    protected class QuerySqlBuilder private constructor(
         val sqlType: SqlType
     ) {
+
+        constructor() : this(SqlType.Select)
+
         private val columns = mutableListOf<Column>()
         private var targetTable: Table<*>? = null
         private val where = mutableListOf<SqlWhere>()
@@ -68,21 +71,23 @@ abstract class BasicDatabaseHelper(
         private var limitCount = 0
 
         fun buildQuerySql(): String {
-            return when (sqlType) {
-                SqlType.Select -> queryBySelect()
-                SqlType.Insert -> TODO()
-                SqlType.Update -> TODO()
-                SqlType.Delete -> TODO()
-            }
+//            return when (sqlType) {
+//                SqlType.Select -> queryBySelect()
+//                SqlType.Insert -> TODO()
+//                SqlType.Update -> TODO()
+//                SqlType.Delete -> TODO()
+//            }
+            return queryBySelect()
         }
 
         fun buildQueryArguments(): Array<String> {
-            return when (sqlType) {
-                SqlType.Select -> buildQueryArguments()
-                SqlType.Insert -> TODO()
-                SqlType.Update -> TODO()
-                SqlType.Delete -> TODO()
-            }
+//            return when (sqlType) {
+//                SqlType.Select -> argumentsBySelect()
+//                SqlType.Insert -> TODO()
+//                SqlType.Update -> TODO()
+//                SqlType.Delete -> TODO()
+//            }
+            return argumentsBySelect()
         }
 
         fun select(vararg c: Column): QuerySqlBuilder {
@@ -189,7 +194,7 @@ abstract class BasicDatabaseHelper(
     abstract class Table<T : Any>(
         val name: String
     ) {
-        val columns = mutableListOf<Column>()
+        abstract val columns: Array<Column>
 
         abstract fun mapInfo(cursor: Cursor): T
 
