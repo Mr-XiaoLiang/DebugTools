@@ -15,6 +15,17 @@ sealed class HttpState {
         const val KEY_STATE = "state"
         const val KEY_VALUE = "value"
 
+        fun parse(json: String): HttpState {
+            if (json.isEmpty()) {
+                return Unknown
+            }
+            return try {
+                parse(JSONObject(json))
+            } catch (e: Exception) {
+                Unknown
+            }
+        }
+
         fun parse(json: JSONObject): HttpState {
             val state = json.optString(KEY_STATE) ?: ""
             when (state) {

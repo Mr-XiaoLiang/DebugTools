@@ -200,20 +200,59 @@ abstract class BasicDatabaseHelper(
 
     }
 
-    class Column(
+    sealed class Column(
         val name: String,
         val type: ColumnType,
         val isPrimaryKey: Boolean = false,
     ) {
 
-        fun getValue(cursor: Cursor): Any? {
-            return when (type) {
-                ColumnType.Int -> cursor.getIntOrNull(cursor.getColumnIndex(name))
-                ColumnType.Long -> cursor.getLongOrNull(cursor.getColumnIndex(name))
-                ColumnType.Double -> cursor.getDoubleOrNull(cursor.getColumnIndex(name))
-                ColumnType.String -> cursor.getStringOrNull(cursor.getColumnIndex(name))
+        protected fun <T> getIndex(
+            cursor: Cursor,
+            block: (index: Int) -> T?
+        ): T? {
+            val columnIndex = cursor.getColumnIndex(name)
+            if (columnIndex < 0) {
+                return null
+            }
+            return block(columnIndex)
+        }
+
+        class I(
+            name: String,
+            isPrimaryKey: Boolean = false
+        ) : Column(name, ColumnType.Int, isPrimaryKey) {
+            fun getValue(cursor: Cursor): Int? {
+                return getIndex(cursor) { cursor.getIntOrNull(it) }
             }
         }
+
+        class L(
+            name: String,
+            isPrimaryKey: Boolean = false
+        ) : Column(name, ColumnType.Long, isPrimaryKey) {
+            fun getValue(cursor: Cursor): Long? {
+                return getIndex(cursor) { cursor.getLongOrNull(it) }
+            }
+        }
+
+        class D(
+            name: String,
+            isPrimaryKey: Boolean = false
+        ) : Column(name, ColumnType.Double, isPrimaryKey) {
+            fun getValue(cursor: Cursor): Double? {
+                return getIndex(cursor) { cursor.getDoubleOrNull(it) }
+            }
+        }
+
+        class S(
+            name: String,
+            isPrimaryKey: Boolean = false
+        ) : Column(name, ColumnType.String, isPrimaryKey) {
+            fun getValue(cursor: Cursor): String? {
+                return getIndex(cursor) { cursor.getStringOrNull(it) }
+            }
+        }
+
     }
 
 }
