@@ -18,6 +18,19 @@ class DHttpDataService(context: Context) : BasicDatabaseHelper(context, "debug_h
         // 暂时还不需要更新
     }
 
+    fun insert(info: DHttpInfo): Long {
+        val db = writableDatabase
+        return db.insert(HttpTable.name, null, HttpTable.getValues(info))
+    }
+
+    fun queryLimit(minTime: Long): List<DHttpInfo>? {
+        TODO()
+    }
+
+    fun queryById(id: Long): DHttpInfo? {
+        TODO()
+    }
+
     object HttpTable : Table<DHttpInfo>("DebugHttp") {
 
         /**
@@ -54,7 +67,7 @@ class DHttpDataService(context: Context) : BasicDatabaseHelper(context, "debug_h
             )
         }
 
-        private fun getValues(info: DHttpInfo): ContentValues {
+        fun getValues(info: DHttpInfo): ContentValues {
             val contentValues = ContentValues()
             if (info.id != DHttpInfo.NO_ID) {
                 contentValues.put(columnId.name, info.id)
