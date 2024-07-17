@@ -43,85 +43,79 @@ abstract class BasicDatabaseHelper(
         db.execSQL(sql.toString())
     }
 
-    protected fun <T : Any> select(
+    protected fun <T : Any> selectList(
         db: SQLiteDatabase = readableDatabase,
-        table: Table<T>,
-        queryBuilder: QuerySqlBuilder,
+        queryBuilder: QuerySqlBuilder<T>,
     ): List<T> {
         val resultList = ArrayList<T>()
         val cursor = db.rawQuery(queryBuilder.buildQuerySql(), queryBuilder.buildQueryArguments())
         while (cursor.moveToNext()) {
-            resultList.add(table.mapInfo(cursor))
+            resultList.add(queryBuilder.targetTable.mapInfo(cursor))
         }
         cursor.close();
         return resultList;
-
     }
 
-    protected class QuerySqlBuilder private constructor(
-        val sqlType: SqlType
+    protected fun <T : Any> queryBuilder(table: Table<T>): QuerySqlBuilder<T> {
+        return QuerySqlBuilder(this, table)
+    }
+
+    protected class QuerySqlBuilder<T : Any>(
+        val dbHelper: BasicDatabaseHelper,
+        val targetTable: Table<T>,
     ) {
 
-        constructor() : this(SqlType.Select)
-
         private val columns = mutableListOf<Column>()
-        private var targetTable: Table<*>? = null
         private val where = mutableListOf<SqlWhere>()
         private var limitOffset = 0
         private var limitCount = 0
+        private var orderBy = mutableListOf<SqlOrder>()
 
         fun buildQuerySql(): String {
-//            return when (sqlType) {
-//                SqlType.Select -> queryBySelect()
-//                SqlType.Insert -> TODO()
-//                SqlType.Update -> TODO()
-//                SqlType.Delete -> TODO()
-//            }
-            return queryBySelect()
+            return buildQuerySqlBySelect()
         }
 
         fun buildQueryArguments(): Array<String> {
-//            return when (sqlType) {
-//                SqlType.Select -> argumentsBySelect()
-//                SqlType.Insert -> TODO()
-//                SqlType.Update -> TODO()
-//                SqlType.Delete -> TODO()
-//            }
-            return argumentsBySelect()
+            return buildArgumentsBySelect()
         }
 
-        fun select(vararg c: Column): QuerySqlBuilder {
+        fun select(vararg c: Column): QuerySqlBuilder<T> {
             columns.addAll(c)
             return this
         }
 
-        fun limit(offset: Int, count: Int): QuerySqlBuilder {
+        fun orderBy(vararg values: SqlOrder): QuerySqlBuilder<T> {
+            orderBy.addAll(values)
+            return this
+        }
+
+        fun limit(offset: Int, count: Int): QuerySqlBuilder<T> {
             limitOffset = offset
             limitCount = count
             return this
         }
 
-        fun pageOf(pageSize: Int, pageIndex: Int): QuerySqlBuilder {
+        fun pageOf(pageSize: Int, pageIndex: Int): QuerySqlBuilder<T> {
             limitOffset = pageIndex * pageSize
             limitCount = pageSize
             return this
         }
 
-        fun selectAll(): QuerySqlBuilder {
-            columns.addAll(targetTable!!.columns)
+        fun selectAll(): QuerySqlBuilder<T> {
+            columns.addAll(targetTable.columns)
             return this
         }
 
-        fun where(vararg w: SqlWhere): QuerySqlBuilder {
+        fun where(vararg w: SqlWhere): QuerySqlBuilder<T> {
             where.addAll(w)
             return this
         }
 
-        private fun argumentsBySelect(): Array<String> {
+        private fun buildArgumentsBySelect(): Array<String> {
             return where.map { it.value }.toTypedArray()
         }
 
-        private fun queryBySelect(): String {
+        private fun buildQuerySqlBySelect(): String {
             val table = targetTable ?: throw IllegalStateException("table is null")
             val sql = StringBuilder()
             sql.append("SELECT ")
@@ -153,6 +147,24 @@ abstract class BasicDatabaseHelper(
                         .append(" ?")
                 }
             }
+            if (orderBy.isNotEmpty()) {
+                sql.append(" ORDER BY ")
+                for (index in orderBy.indices) {
+                    if (index > 0) {
+                        sql.append(",")
+                    }
+                    val order = orderBy[index]
+                    when (order) {
+                        is SqlOrder.Asc -> {
+                            sql.append(order.column.name).append(" ASC ")
+                        }
+
+                        is SqlOrder.Desc -> {
+                            sql.append(order.column.name).append(" DESC ")
+                        }
+                    }
+                }
+            }
             if (limitCount > 0) {
                 sql.append(" LIMIT ")
                     .append(limitOffset)
@@ -162,10 +174,10 @@ abstract class BasicDatabaseHelper(
             return sql.toString()
         }
 
-        fun from(table: Table<*>): QuerySqlBuilder {
-            this.targetTable = table
-            return this
+        fun queryBySelectList(): List<T> {
+            return dbHelper.selectList(dbHelper.readableDatabase, this)
         }
+
     }
 
     protected sealed class SqlWhere(
@@ -175,6 +187,13 @@ abstract class BasicDatabaseHelper(
     ) {
         class And(column: Column, option: String, value: String) : SqlWhere(column, value, option)
         class Or(column: Column, option: String, value: String) : SqlWhere(column, value, option)
+    }
+
+    protected sealed class SqlOrder(
+        val column: Column
+    ) {
+        class Asc(column: Column) : SqlOrder(column)
+        class Desc(column: Column) : SqlOrder(column)
     }
 
     protected enum class SqlType {

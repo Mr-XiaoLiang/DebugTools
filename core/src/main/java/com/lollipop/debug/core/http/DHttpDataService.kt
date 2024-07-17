@@ -23,8 +23,13 @@ class DHttpDataService(context: Context) : BasicDatabaseHelper(context, "debug_h
         return db.insert(HttpTable.name, null, HttpTable.getValues(info))
     }
 
-    fun queryLimit(minTime: Long): List<DHttpInfo>? {
-        TODO()
+    fun queryLimit(minTime: Long, pageSize: Int, pageIndex: Int): List<DHttpInfo> {
+        return queryBuilder(HttpTable)
+            .selectAll()
+            .where(SqlWhere.And(HttpTable.columnTime, ">=", minTime.toString()))
+            .orderBy(SqlOrder.Desc(HttpTable.columnTime))
+            .pageOf(pageSize, pageIndex)
+            .queryBySelectList()
     }
 
     fun queryById(id: Long): DHttpInfo? {
@@ -45,13 +50,13 @@ class DHttpDataService(context: Context) : BasicDatabaseHelper(context, "debug_h
         )
          */
 
-        private val columnId = Column.L("id", true)
-        private val columnMethod = Column.S("method")
-        private val columnState = Column.S("state")
-        private val columnUrl = Column.S("url")
-        private val columnTime = Column.L("time")
-        private val columnHeader = Column.S("header")
-        private val columnRequestBody = Column.S("request_body")
+        val columnId = Column.L("id", true)
+        val columnMethod = Column.S("method")
+        val columnState = Column.S("state")
+        val columnUrl = Column.S("url")
+        val columnTime = Column.L("time")
+        val columnHeader = Column.S("header")
+        val columnRequestBody = Column.S("request_body")
         private val columnResponseBody = Column.S("response_body")
 
         override val columns: Array<Column> by lazy {
