@@ -46,14 +46,46 @@ abstract class BasicDatabaseHelper(
     protected fun <T : Any> selectList(
         db: SQLiteDatabase = readableDatabase,
         queryBuilder: QuerySqlBuilder<T>,
-    ): List<T> {
+    ): ListResult<T> {
         val resultList = ArrayList<T>()
-        val cursor = db.rawQuery(queryBuilder.buildQuerySql(), queryBuilder.buildQueryArguments())
-        while (cursor.moveToNext()) {
-            resultList.add(queryBuilder.targetTable.mapInfo(cursor))
+        try {
+            db.rawQuery(
+                queryBuilder.buildQuerySql(),
+                queryBuilder.buildQueryArguments()
+            ).use { cursor ->
+                while (cursor.moveToNext()) {
+                    resultList.add(queryBuilder.targetTable.mapInfo(cursor))
+                }
+            }
+        } catch (e: Throwable) {
+            e.printStackTrace()
+            return ListResult.Error(e)
         }
-        cursor.close();
-        return resultList;
+        return ListResult.Success(resultList)
+    }
+
+    protected fun <T : Any> selectFirst(
+        db: SQLiteDatabase = readableDatabase,
+        queryBuilder: QuerySqlBuilder<T>,
+    ): StaticResult<T> {
+        try {
+            val info: T? = db.rawQuery(
+                queryBuilder.buildQuerySql(),
+                queryBuilder.buildQueryArguments()
+            ).use { cursor ->
+                if (cursor.moveToNext()) {
+                    queryBuilder.targetTable.mapInfo(cursor)
+                } else {
+                    null
+                }
+            }
+            if (info != null) {
+                return StaticResult.Success(info)
+            }
+            return StaticResult.Empty()
+        } catch (e: Throwable) {
+            return StaticResult.Error(e)
+        }
     }
 
     protected fun <T : Any> queryBuilder(table: Table<T>): QuerySqlBuilder<T> {
@@ -116,7 +148,7 @@ abstract class BasicDatabaseHelper(
         }
 
         private fun buildQuerySqlBySelect(): String {
-            val table = targetTable ?: throw IllegalStateException("table is null")
+            val table = targetTable
             val sql = StringBuilder()
             sql.append("SELECT ")
             for (index in columns.indices) {
@@ -174,8 +206,12 @@ abstract class BasicDatabaseHelper(
             return sql.toString()
         }
 
-        fun queryBySelectList(): List<T> {
+        fun queryBySelectList(): ListResult<T> {
             return dbHelper.selectList(dbHelper.readableDatabase, this)
+        }
+
+        fun queryBySelectFirst(): StaticResult<T> {
+            return dbHelper.selectFirst(dbHelper.readableDatabase, this)
         }
 
     }

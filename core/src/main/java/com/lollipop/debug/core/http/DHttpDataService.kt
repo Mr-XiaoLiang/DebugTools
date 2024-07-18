@@ -5,6 +5,8 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import com.lollipop.debug.core.base.BasicDatabaseHelper
+import com.lollipop.debug.core.base.ListResult
+import com.lollipop.debug.core.base.StaticResult
 import com.lollipop.debug.http.HttpState
 import com.lollipop.debug.http.RequestType
 
@@ -18,12 +20,20 @@ class DHttpDataService(context: Context) : BasicDatabaseHelper(context, "debug_h
         // 暂时还不需要更新
     }
 
-    fun insert(info: DHttpInfo): Long {
-        val db = writableDatabase
-        return db.insert(HttpTable.name, null, HttpTable.getValues(info))
+    fun insert(info: DHttpInfo): StaticResult<Unit> {
+        try {
+            val db = writableDatabase
+            val resultCode = db.insert(HttpTable.name, null, HttpTable.getValues(info))
+            if (resultCode < 0) {
+                return StaticResult.Error(IllegalStateException("insert info Error: $info"))
+            }
+            return StaticResult.Success(Unit)
+        } catch (e: Throwable) {
+            return StaticResult.Error(e)
+        }
     }
 
-    fun queryLimit(minTime: Long, pageSize: Int, pageIndex: Int): List<DHttpInfo> {
+    fun queryLimit(minTime: Long, pageSize: Int, pageIndex: Int): ListResult<DHttpInfo> {
         return queryBuilder(HttpTable)
             .selectAll()
             .where(SqlWhere.And(HttpTable.columnTime, ">=", minTime.toString()))
@@ -32,8 +42,12 @@ class DHttpDataService(context: Context) : BasicDatabaseHelper(context, "debug_h
             .queryBySelectList()
     }
 
-    fun queryById(id: Long): DHttpInfo? {
-        TODO()
+    fun queryById(id: Long): StaticResult<DHttpInfo> {
+        return queryBuilder(HttpTable)
+            .selectAll()
+            .where(SqlWhere.And(HttpTable.columnId, "=", id.toString()))
+            .orderBy(SqlOrder.Desc(HttpTable.columnTime))
+            .queryBySelectFirst()
     }
 
     object HttpTable : Table<DHttpInfo>("DebugHttp") {
