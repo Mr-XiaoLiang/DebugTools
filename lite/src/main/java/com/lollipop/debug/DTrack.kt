@@ -11,9 +11,10 @@ object DTrack : LiteProxy<DTrack.DebugTrack>() {
         targetName: String,
         sourcePage: String,
         message: String,
-        data: Map<String, String>
+        data: Map<String, String>,
+        extra: String
     ) {
-        invoke { it.log(action, pageName, targetName, sourcePage, message, data) }
+        invoke { it.log(action, pageName, targetName, sourcePage, message, data, extra) }
     }
 
     interface DebugTrack {
@@ -24,7 +25,8 @@ object DTrack : LiteProxy<DTrack.DebugTrack>() {
             targetName: String,
             sourcePage: String,
             message: String,
-            data: Map<String, String>
+            data: Map<String, String>,
+            extra: String
         )
 
     }

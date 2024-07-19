@@ -1,5 +1,6 @@
 package com.lollipop.debug.core.base
 
+import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
@@ -279,6 +280,10 @@ abstract class BasicDatabaseHelper(
             fun getValue(cursor: Cursor): Int? {
                 return getIndex(cursor) { cursor.getIntOrNull(it) }
             }
+
+            fun putValue(contentValues: ContentValues, value: Int) {
+                contentValues.put(name, value)
+            }
         }
 
         class L(
@@ -287,6 +292,10 @@ abstract class BasicDatabaseHelper(
         ) : Column(name, ColumnType.Long, isPrimaryKey) {
             fun getValue(cursor: Cursor): Long? {
                 return getIndex(cursor) { cursor.getLongOrNull(it) }
+            }
+
+            fun putValue(contentValues: ContentValues, value: Long) {
+                contentValues.put(name, value)
             }
         }
 
@@ -297,6 +306,10 @@ abstract class BasicDatabaseHelper(
             fun getValue(cursor: Cursor): Double? {
                 return getIndex(cursor) { cursor.getDoubleOrNull(it) }
             }
+
+            fun putValue(contentValues: ContentValues, value: Double) {
+                contentValues.put(name, value)
+            }
         }
 
         class S(
@@ -305,6 +318,10 @@ abstract class BasicDatabaseHelper(
         ) : Column(name, ColumnType.String, isPrimaryKey) {
             fun getValue(cursor: Cursor): String? {
                 return getIndex(cursor) { cursor.getStringOrNull(it) }
+            }
+
+            fun putValue(contentValues: ContentValues, value: String) {
+                contentValues.put(name, value)
             }
         }
 

@@ -71,7 +71,7 @@ class DHttpDataService(context: Context) : BasicDatabaseHelper(context, "debug_h
         val columnTime = Column.L("time")
         val columnHeader = Column.S("header")
         val columnRequestBody = Column.S("request_body")
-        private val columnResponseBody = Column.S("response_body")
+        val columnResponseBody = Column.S("response_body")
 
         override val columns: Array<Column> by lazy {
             arrayOf(
@@ -91,13 +91,13 @@ class DHttpDataService(context: Context) : BasicDatabaseHelper(context, "debug_h
             if (info.id != DHttpInfo.NO_ID) {
                 contentValues.put(columnId.name, info.id)
             }
-            contentValues.put(columnMethod.name, info.type.type)
-            contentValues.put(columnState.name, info.state.toJson().toString())
-            contentValues.put(columnUrl.name, info.url)
-            contentValues.put(columnTime.name, info.time)
-            contentValues.put(columnHeader.name, DHttpInfo.formatHeader(info.header))
-            contentValues.put(columnRequestBody.name, info.data)
-            contentValues.put(columnResponseBody.name, info.response)
+            columnMethod.putValue(contentValues, info.type.type)
+            columnState.putValue(contentValues, info.state.toJson().toString())
+            columnUrl.putValue(contentValues, info.url)
+            columnTime.putValue(contentValues, info.time)
+            columnHeader.putValue(contentValues, DHttpInfo.formatHeader(info.header))
+            columnRequestBody.putValue(contentValues, info.data)
+            columnResponseBody.putValue(contentValues, info.response)
             return contentValues
         }
 
