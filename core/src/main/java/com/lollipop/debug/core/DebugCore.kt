@@ -22,6 +22,8 @@ object DebugCore {
     @Keep
     @JvmStatic
     fun init(application: Application) {
+        DHttpImpl.init(application)
+        DTrackImpl.init(application)
         DHttp.register(DHttpImpl)
         DTrack.register(DTrackImpl)
     }
