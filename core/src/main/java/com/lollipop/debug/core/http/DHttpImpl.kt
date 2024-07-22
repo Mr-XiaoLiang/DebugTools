@@ -14,6 +14,7 @@ object DHttpImpl : DHttp.DebugHttp {
 
     fun init(application: Application) {
         dataService = DHttpSelector(application)
+        DHttp.register(this)
     }
 
     fun query(minTime: Long = 0L, pageSize: Int, pageIndex: Int): List<DHttpInfo> {
@@ -35,7 +36,7 @@ object DHttpImpl : DHttp.DebugHttp {
         data: String,
         response: String,
     ) {
-        dataService?.insert(
+        dataService?.postInsert(
             DHttpInfo(
                 type = type,
                 state = state,

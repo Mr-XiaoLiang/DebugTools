@@ -18,7 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.lollipop.debug.DPanel
 import com.lollipop.debug.DToast
+import com.lollipop.debug.DTrack
 import com.lollipop.debug.DebugLocal
+import com.lollipop.debug.track.TrackAction
 import com.lollipop.debugtools.ui.theme.DebugToolsTheme
 
 class MainActivity : ComponentActivity() {
@@ -39,16 +41,19 @@ class MainActivity : ComponentActivity() {
         DPanel.panel("AA").apply {
             button("b", "", "BB") {
                 DToast.show("HeiHei")
+                DTrack.log(TrackAction.Click, "Main", "BB", "", "", emptyMap(), "")
             }
         }
         DPanel.panel("BB").apply {
             button("c", "", "CC") {
                 DToast.show("?????")
                 DPanel.navigate("AA")
+                DTrack.log(TrackAction.Click, "Main", "CC", "", "", emptyMap(), "")
             }
             group("g", "Group").button("dd", "", "DD") {
                 DToast.show("XXXXX")
                 DPanel.navigate("CC")
+                DTrack.log(TrackAction.Click, "Main", "DD", "", "", emptyMap(), "")
             }
         }
     }

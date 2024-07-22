@@ -25,4 +25,17 @@ class DHttpSelector(context: Context) : BasicDebugDataProvider<DHttpInfo>(contex
         return dbHelper.insert(info)
     }
 
+    fun postInsert(info: DHttpInfo) {
+        pendingPost(PendingInsert(this, info))
+    }
+
+    private class PendingInsert(
+        val selector: DHttpSelector,
+        val info: DHttpInfo
+    ) : PendingTask {
+        override fun run() {
+            selector.insert(info)
+        }
+    }
+
 }

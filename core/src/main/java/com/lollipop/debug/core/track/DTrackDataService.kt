@@ -94,7 +94,7 @@ class DTrackDataService(context: Context) : BasicDatabaseHelper(context, "debug_
                 contentValues.put(columnId.name, info.id)
             }
             columnAction.putValue(contentValues, info.action.type)
-            columnPage.putValue(contentValues, info.sourcePage)
+            columnPage.putValue(contentValues, info.pageName)
             columnTarget.putValue(contentValues, info.targetName)
             columnSource.putValue(contentValues, info.sourcePage)
             columnMessage.putValue(contentValues, info.message)

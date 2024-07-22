@@ -13,6 +13,7 @@ object DTrackImpl : DTrack.DebugTrack {
 
     fun init(application: Application) {
         dataService = DTrackSelector(application)
+        DTrack.register(this)
     }
 
     fun query(minTime: Long = 0L, pageSize: Int, pageIndex: Int): List<DTrackInfo> {

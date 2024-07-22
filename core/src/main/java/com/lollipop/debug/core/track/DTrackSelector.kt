@@ -25,4 +25,18 @@ class DTrackSelector(context: Context) : BasicDebugDataProvider<DTrackInfo>(cont
         return dbHelper.insert(info)
     }
 
+    fun postInsert(info: DTrackInfo) {
+        pendingPost(PendingInsert(this, info))
+    }
+
+    private class PendingInsert(
+        val selector: DTrackSelector,
+        val info: DTrackInfo
+    ) : PendingTask {
+        override fun run() {
+            selector.insert(info)
+        }
+    }
+
+
 }
