@@ -6,6 +6,7 @@ import org.json.JSONObject
 open class DTrackPage(
     val pageName: String,
     val source: DTrackPage?,
+    val pageCallback: PageCallback
 ) {
 
     val data = mutableMapOf<String, String>()
@@ -59,6 +60,7 @@ open class DTrackPage(
             extra = getExtra()
         )
         afterResume?.onAfterResume(this)
+        pageCallback.onPageResume(this)
     }
 
     open fun onPause() {
@@ -74,6 +76,31 @@ open class DTrackPage(
             extra = getExtra()
         )
         afterPause?.onAfterPause(this)
+        pageCallback.onPagePause(this)
+    }
+
+    fun launch() {
+        TODO()
+    }
+
+    fun foreground() {
+        TODO()
+    }
+
+    fun background() {
+        TODO()
+    }
+
+    fun click() {
+        TODO()
+    }
+
+    fun refresh() {
+        TODO()
+    }
+
+    fun trackAny(type: String) {
+        TODO()
     }
 
     fun interface BeforePageResume {
