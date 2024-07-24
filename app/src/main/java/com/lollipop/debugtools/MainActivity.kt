@@ -20,10 +20,15 @@ import com.lollipop.debug.DPanel
 import com.lollipop.debug.DToast
 import com.lollipop.debug.DTrack
 import com.lollipop.debug.DebugLocal
+import com.lollipop.debug.track.DTrackManager
 import com.lollipop.debug.track.TrackAction
+import com.lollipop.debug.track.registerTrackPage
 import com.lollipop.debugtools.ui.theme.DebugToolsTheme
 
 class MainActivity : ComponentActivity() {
+
+    private val trackPage = registerTrackPage("MainPage")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -41,7 +46,7 @@ class MainActivity : ComponentActivity() {
         DPanel.panel("AA").apply {
             button("b", "", "BB") {
                 DToast.show("HeiHei")
-                DTrack.log(TrackAction.Click, "Main", "BB", "", "", emptyMap(), "")
+                trackPage.click("HeiHei")
             }
         }
         DPanel.panel("BB").apply {

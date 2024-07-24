@@ -1,19 +1,17 @@
 package com.lollipop.debug.track
 
-import com.lollipop.debug.DTrack
-import org.json.JSONObject
+import com.lollipop.debug.track.event.DTrackAny
+import com.lollipop.debug.track.event.DTrackBackground
+import com.lollipop.debug.track.event.DTrackClick
+import com.lollipop.debug.track.event.DTrackForeground
+import com.lollipop.debug.track.event.DTrackLaunch
+import com.lollipop.debug.track.event.DTrackRefresh
 
 open class DTrackPage(
-    val pageName: String,
-    val source: DTrackPage?,
+    pageName: String,
+    source: DTrackPage?,
     val pageCallback: PageCallback
-) {
-
-    val data = mutableMapOf<String, String>()
-    var targetName: String = ""
-    var message: String = ""
-    var customExtra: String = ""
-    val jsonExtra = JSONObject()
+) : DTrackBuilder(pageName, source?.pageName ?: "") {
 
     protected var beforeResume: BeforePageResume? = null
     protected var afterResume: AfterPageResume? = null
@@ -21,11 +19,14 @@ open class DTrackPage(
     protected var afterPause: AfterPagePause? = null
 
     var isResumed = false
-        protected set
-
-    private fun getExtra(): String {
-        return customExtra.ifEmpty { jsonExtra.toString() }
-    }
+        protected set(value) {
+            field = value
+            data["is_resumed"] = if (value) {
+                "true"
+            } else {
+                "false"
+            }
+        }
 
     open fun beforeResume(block: BeforePageResume): DTrackPage {
         beforeResume = block
@@ -50,15 +51,7 @@ open class DTrackPage(
     open fun onResume() {
         beforeResume?.onBeforeResume(this)
         isResumed = true
-        DTrack.log(
-            action = TrackAction.PageShow,
-            pageName = pageName,
-            targetName = targetName,
-            sourcePage = source?.pageName ?: "",
-            message = message,
-            data = data,
-            extra = getExtra()
-        )
+        track(TrackAction.PageShow)
         afterResume?.onAfterResume(this)
         pageCallback.onPageResume(this)
     }
@@ -66,41 +59,39 @@ open class DTrackPage(
     open fun onPause() {
         beforePause?.onBeforePause(this)
         isResumed = false
-        DTrack.log(
-            action = TrackAction.PageHide,
-            pageName = pageName,
-            targetName = targetName,
-            sourcePage = source?.pageName ?: "",
-            message = message,
-            data = data,
-            extra = getExtra()
-        )
+        track(TrackAction.PageHide)
         afterPause?.onAfterPause(this)
         pageCallback.onPagePause(this)
     }
 
-    fun launch() {
-        TODO()
+    @JvmOverloads
+    fun launch(target: String = "", builder: (DTrackLaunch) -> Unit = {}) {
+        DTrackLaunch(target, this).apply(builder).track()
     }
 
-    fun foreground() {
-        TODO()
+    @JvmOverloads
+    fun foreground(target: String = "", builder: (DTrackForeground) -> Unit = {}) {
+        DTrackForeground(target, this).apply(builder).track()
     }
 
-    fun background() {
-        TODO()
+    @JvmOverloads
+    fun background(target: String = "", builder: (DTrackBackground) -> Unit = {}) {
+        DTrackBackground(target, this).apply(builder).track()
     }
 
-    fun click() {
-        TODO()
+    @JvmOverloads
+    fun click(target: String = "", builder: (DTrackClick) -> Unit = {}) {
+        DTrackClick(target, this).apply(builder).track()
     }
 
-    fun refresh() {
-        TODO()
+    @JvmOverloads
+    fun refresh(target: String = "", builder: (DTrackRefresh) -> Unit = {}) {
+        DTrackRefresh(target, this).apply(builder).track()
     }
 
-    fun trackAny(type: String) {
-        TODO()
+    @JvmOverloads
+    fun trackAny(action: String, target: String = "", builder: (DTrackAny) -> Unit = {}) {
+        DTrackAny(target, this, action).apply(builder).track()
     }
 
     fun interface BeforePageResume {
