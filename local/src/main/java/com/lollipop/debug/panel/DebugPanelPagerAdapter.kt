@@ -85,6 +85,16 @@ class DebugPanelPagerAdapter(val data: List<DebugPanelPageDescriptor>) :
         }
     }
 
+    override fun onViewAttachedToWindow(holder: DebugPagerHolder) {
+        super.onViewAttachedToWindow(holder)
+        holder.onAttached()
+    }
+
+    override fun onViewDetachedFromWindow(holder: DebugPagerHolder) {
+        super.onViewDetachedFromWindow(holder)
+        holder.onDetached()
+    }
+
     override fun getItemViewType(position: Int): Int {
         return data[position].itemType
     }

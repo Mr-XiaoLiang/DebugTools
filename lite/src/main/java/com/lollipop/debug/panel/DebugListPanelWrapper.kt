@@ -7,8 +7,8 @@ internal class DebugListPanelPageWrapper(
         implements.forEach { it.reset(list) }
     }
 
-    override fun add(item: DebugListPanelItem) {
-        implements.forEach { it.add(item) }
+    override fun append(list: List<DebugListPanelItem>) {
+        implements.forEach { it.append(list) }
     }
 
     override fun remove(index: Int) {
