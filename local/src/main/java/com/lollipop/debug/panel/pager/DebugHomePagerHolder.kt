@@ -109,4 +109,10 @@ class DebugHomePagerHolder(
 
     }
 
+    override fun onAttached() {
+    }
+
+    override fun onDetached() {
+    }
+
 }

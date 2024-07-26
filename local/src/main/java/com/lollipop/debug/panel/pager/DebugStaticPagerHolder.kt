@@ -126,19 +126,29 @@ class DebugStaticPagerHolder(
     }
 
     fun bind(info: DebugPanelPageDescriptor.RemoteStatic) {
-        currentPanelInfo?.let {
-            if (it.onPageChangedListener === this) {
-                it.onPageChangedListener = null
-            }
-        }
+        unbindListener()
         val pageInfo = info.info
         if (pageInfo !== currentPanelInfo) {
             contentGroup.removeAllViews()
         }
         currentPanelInfo = pageInfo
-        pageInfo.onPageChangedListener = null
+        unbindListener()
         buildContent(pageInfo)
-        pageInfo.onPageChangedListener = this
+        bindListener()
+    }
+
+    private fun bindListener() {
+        currentPanelInfo?.let {
+            it.onPageChangedListener = this
+        }
+    }
+
+    private fun unbindListener() {
+        currentPanelInfo?.let {
+            if (it.onPageChangedListener === this) {
+                it.onPageChangedListener = null
+            }
+        }
     }
 
     override fun onPageChanged() {
@@ -156,6 +166,14 @@ class DebugStaticPagerHolder(
         val layoutInflater = LayoutInflater.from(binding.root.context)
         childBuild(layoutInflater, contentGroup, info.itemList, groupStateHelper)
         currentMode = info.changeMode
+    }
+
+    override fun onAttached() {
+        bindListener()
+    }
+
+    override fun onDetached() {
+        unbindListener()
     }
 
 }

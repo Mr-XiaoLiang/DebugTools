@@ -84,4 +84,10 @@ class DebugToastHistoryPagerHolder(
 
     }
 
+    override fun onAttached() {
+    }
+
+    override fun onDetached() {
+    }
+
 }
