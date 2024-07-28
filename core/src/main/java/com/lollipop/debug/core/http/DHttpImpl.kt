@@ -18,13 +18,17 @@ object DHttpImpl : DHttp.DebugHttp {
     }
 
     fun query(minTime: Long = 0L, pageSize: Int, pageIndex: Int): List<DHttpInfo> {
-        val result = dataService?.dbHelper?.queryLimit(
-            minTime, pageSize, pageIndex
-        ) ?: return emptyList()
+        val result = queryOriginal(minTime, pageSize, pageIndex)
         if (result is ListResult.Success<DHttpInfo>) {
             return result.data
         }
         return emptyList()
+    }
+
+    fun queryOriginal(minTime: Long = 0L, pageSize: Int, pageIndex: Int): ListResult<DHttpInfo> {
+        return dataService?.dbHelper?.queryLimit(
+            minTime, pageSize, pageIndex
+        ) ?: ListResult.Error(Exception("查询失败"))
     }
 
     override fun log(

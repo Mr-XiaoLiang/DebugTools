@@ -17,15 +17,18 @@ object DTrackImpl : DTrack.DebugTrack {
     }
 
     fun query(minTime: Long = 0L, pageSize: Int, pageIndex: Int): List<DTrackInfo> {
-        val result = dataService?.dbHelper?.queryLimit(
-            minTime, pageSize, pageIndex
-        ) ?: return emptyList()
+        val result = queryOriginal(minTime, pageSize, pageIndex)
         if (result is ListResult.Success<DTrackInfo>) {
             return result.data
         }
         return emptyList()
     }
 
+    fun queryOriginal(minTime: Long = 0L, pageSize: Int, pageIndex: Int): ListResult<DTrackInfo> {
+        return dataService?.dbHelper?.queryLimit(
+            minTime, pageSize, pageIndex
+        ) ?: ListResult.Error(Exception("查询失败"))
+    }
 
     override fun log(
         action: TrackAction,
@@ -36,7 +39,7 @@ object DTrackImpl : DTrack.DebugTrack {
         data: Map<String, String>,
         extra: String
     ) {
-        dataService?.insert(
+        dataService?.postInsert(
             DTrackInfo(
                 action = action,
                 pageName = pageName,
