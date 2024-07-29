@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.lollipop.debug.DebugToastHelper
+import com.lollipop.debug.basic.DebugPagerHolder
 import com.lollipop.debug.local.R
 import com.lollipop.debug.local.databinding.DebugItemToastHistoryBinding
 import com.lollipop.debug.local.databinding.DebugPanelPageToastHistoryBinding

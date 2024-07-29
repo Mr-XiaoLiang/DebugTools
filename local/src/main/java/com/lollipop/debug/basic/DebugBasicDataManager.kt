@@ -28,7 +28,7 @@ abstract class DebugBasicDataManager<T> {
                 minTimeOfNow()
             }
         }
-        RefreshTask<T>(this).doAsync()
+        RefreshTask(this).doAsync()
     }
 
     fun loadMore() {

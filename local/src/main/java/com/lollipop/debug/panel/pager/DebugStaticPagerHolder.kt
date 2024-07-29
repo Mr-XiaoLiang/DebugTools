@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.lollipop.debug.basic.DebugPagerHolder
 import com.lollipop.debug.local.R
 import com.lollipop.debug.local.databinding.DebugItemStaticButtonBinding
 import com.lollipop.debug.local.databinding.DebugItemStaticGroupBinding
@@ -125,7 +126,15 @@ class DebugStaticPagerHolder(
         }
     }
 
-    fun bind(info: DebugPanelPageDescriptor.RemoteStatic) {
+    override fun onBind(info: DebugPanelPageDescriptor) {
+        if (info is DebugPanelPageDescriptor.RemoteStatic) {
+            bind(info)
+        } else {
+            throw IllegalArgumentException("$info is not a static page")
+        }
+    }
+
+    private fun bind(info: DebugPanelPageDescriptor.RemoteStatic) {
         unbindListener()
         val pageInfo = info.info
         if (pageInfo !== currentPanelInfo) {

@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.lollipop.debug.basic.DebugPagerHolder
 import com.lollipop.debug.local.R
 import com.lollipop.debug.local.databinding.DebugItemStaticButtonBinding
 import com.lollipop.debug.local.databinding.DebugPanelPageHomeBinding

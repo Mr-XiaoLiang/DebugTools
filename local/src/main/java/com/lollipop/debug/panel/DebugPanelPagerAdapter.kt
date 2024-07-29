@@ -3,13 +3,13 @@ package com.lollipop.debug.panel
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.lollipop.debug.basic.DebugPagerHolder
 import com.lollipop.debug.local.databinding.DebugPanelPageHomeBinding
 import com.lollipop.debug.local.databinding.DebugPanelPageListBinding
 import com.lollipop.debug.local.databinding.DebugPanelPageStaticBinding
 import com.lollipop.debug.local.databinding.DebugPanelPageToastHistoryBinding
 import com.lollipop.debug.panel.pager.DebugHomePagerHolder
 import com.lollipop.debug.panel.pager.DebugListPagerHolder
-import com.lollipop.debug.panel.pager.DebugPagerHolder
 import com.lollipop.debug.panel.pager.DebugStaticPagerHolder
 import com.lollipop.debug.panel.pager.DebugToastHistoryPagerHolder
 
@@ -70,19 +70,7 @@ class DebugPanelPagerAdapter(val data: List<DebugPanelPageDescriptor>) :
 
     override fun onBindViewHolder(holder: DebugPagerHolder, position: Int) {
         val info = data[position]
-        when (holder) {
-            is DebugListPagerHolder -> {
-                if (info is DebugPanelPageDescriptor.RemoteList) {
-                    holder.bind(info)
-                }
-            }
-
-            is DebugStaticPagerHolder -> {
-                if (info is DebugPanelPageDescriptor.RemoteStatic) {
-                    holder.bind(info)
-                }
-            }
-        }
+        holder.onBind(info)
     }
 
     override fun onViewAttachedToWindow(holder: DebugPagerHolder) {

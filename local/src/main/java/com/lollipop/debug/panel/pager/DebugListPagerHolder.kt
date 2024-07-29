@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.lollipop.debug.basic.DebugPagerHolder
 import com.lollipop.debug.helper.RecyclerViewLoadMoreHelper
 import com.lollipop.debug.local.R
 import com.lollipop.debug.local.databinding.DebugPanelPageListBinding
@@ -52,7 +53,15 @@ class DebugListPagerHolder(
         page.refresh()
     }
 
-    fun bind(info: DebugPanelPageDescriptor.RemoteList) {
+    override fun onBind(info: DebugPanelPageDescriptor) {
+        if (info is DebugPanelPageDescriptor.RemoteList) {
+            bind(info)
+        } else {
+            throw IllegalArgumentException("$info is not a list page")
+        }
+    }
+
+    private fun bind(info: DebugPanelPageDescriptor.RemoteList) {
         val page = info.info
         onPageChanged(page)
         binding.recyclerView.adapter = page.adapter

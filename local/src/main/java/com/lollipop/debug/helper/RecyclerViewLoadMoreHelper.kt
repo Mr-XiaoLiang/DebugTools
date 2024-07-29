@@ -14,6 +14,7 @@ class RecyclerViewLoadMoreHelper(
     var isLoading = false
 
     fun attach(recyclerView: RecyclerView) {
+        recyclerView.removeOnScrollListener(this)
         recyclerView.addOnScrollListener(this)
     }
 
