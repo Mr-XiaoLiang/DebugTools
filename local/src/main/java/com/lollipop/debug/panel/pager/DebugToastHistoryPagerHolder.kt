@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.lollipop.debug.DebugToastHelper
 import com.lollipop.debug.basic.DebugBasicHistoryPagerHolder
+import com.lollipop.debug.local.R
 import com.lollipop.debug.local.databinding.DebugItemToastHistoryBinding
 import com.lollipop.debug.local.databinding.DebugPanelPageBasicHistoryBinding
 import com.lollipop.debug.toast.ToastInfo
@@ -26,6 +27,16 @@ class DebugToastHistoryPagerHolder(
 
     override fun createAdapter(): RecyclerView.Adapter<*> {
         return ToastAdapter(currentToastData)
+    }
+
+    override fun createOptions(): List<Option> {
+        return listOf(
+            option(
+                title = R.string.refresh,
+            ) {
+                callRefresh()
+            }
+        )
     }
 
     override fun canLoadMore(): Boolean {

@@ -7,7 +7,6 @@ import com.lollipop.debug.basic.DebugPagerHolder
 import com.lollipop.debug.local.databinding.DebugPanelPageHomeBinding
 import com.lollipop.debug.local.databinding.DebugPanelPageListBinding
 import com.lollipop.debug.local.databinding.DebugPanelPageStaticBinding
-import com.lollipop.debug.local.databinding.DebugPanelPageToastHistoryBinding
 import com.lollipop.debug.panel.pager.DebugHomePagerHolder
 import com.lollipop.debug.panel.pager.DebugListPagerHolder
 import com.lollipop.debug.panel.pager.DebugStaticPagerHolder
@@ -30,13 +29,7 @@ class DebugPanelPagerAdapter(val data: List<DebugPanelPageDescriptor>) :
 
             viewType == DebugPanelPageDescriptor.Toast.itemType -> {
                 // toast page
-                return DebugToastHistoryPagerHolder(
-                    DebugPanelPageToastHistoryBinding.inflate(
-                        LayoutInflater.from(parent.context),
-                        parent,
-                        false
-                    )
-                )
+                return DebugToastHistoryPagerHolder(parent.context)
             }
 
             viewType >= DebugPanelPageDescriptor.LIST_PAGE_RANGE -> {
