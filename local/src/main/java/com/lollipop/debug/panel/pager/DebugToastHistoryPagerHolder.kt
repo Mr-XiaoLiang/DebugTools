@@ -1,47 +1,46 @@
 package com.lollipop.debug.panel.pager
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.lollipop.debug.DebugToastHelper
-import com.lollipop.debug.basic.DebugPagerHolder
-import com.lollipop.debug.local.R
+import com.lollipop.debug.basic.DebugBasicHistoryPagerHolder
 import com.lollipop.debug.local.databinding.DebugItemToastHistoryBinding
-import com.lollipop.debug.local.databinding.DebugPanelPageToastHistoryBinding
+import com.lollipop.debug.local.databinding.DebugPanelPageBasicHistoryBinding
 import com.lollipop.debug.toast.ToastInfo
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class DebugToastHistoryPagerHolder(
-    val binding: DebugPanelPageToastHistoryBinding
-) : DebugPagerHolder(binding.root), SwipeRefreshLayout.OnRefreshListener {
+    context: Context
+) : DebugBasicHistoryPagerHolder<ToastInfo>(
+    DebugPanelPageBasicHistoryBinding.inflate(
+        LayoutInflater.from(context)
+    )
+), SwipeRefreshLayout.OnRefreshListener {
 
     private val currentToastData = ArrayList<ToastInfo>()
-    private val adapter = ToastAdapter(currentToastData)
 
-    init {
-        binding.recyclerView.adapter = adapter
-        binding.recyclerView.layoutManager = LinearLayoutManager(
-            binding.root.context, RecyclerView.VERTICAL, false
-        )
-        binding.refreshLayout.setOnRefreshListener(this)
-        binding.refreshLayout.setColorSchemeResources(
-            R.color.debugRefreshLayoutColorScheme1,
-            R.color.debugRefreshLayoutColorScheme2,
-            R.color.debugRefreshLayoutColorScheme3,
-            R.color.debugRefreshLayoutColorScheme4
-        )
-        onRefresh()
+    override fun createAdapter(): RecyclerView.Adapter<*> {
+        return ToastAdapter(currentToastData)
+    }
+
+    override fun canLoadMore(): Boolean {
+        return false
+    }
+
+    override fun callLoadMore() {
+        // nothing
     }
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onRefresh() {
         syncData()
-        adapter.notifyDataSetChanged()
-        binding.refreshLayout.isRefreshing = false
+        notifyDataSetChanged()
+        onRefreshEnd()
     }
 
     private fun syncData() {

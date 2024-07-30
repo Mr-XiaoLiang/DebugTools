@@ -59,8 +59,16 @@ abstract class DebugBasicHistoryPagerHolder<T>(
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    protected fun onRefreshEnd() {
+    protected fun notifyDataSetChanged() {
         adapter?.notifyDataSetChanged()
+    }
+
+
+    protected fun notifyItemRangeInserted(start: Int, count: Int) {
+        adapter?.notifyItemRangeInserted(start, count)
+    }
+
+    protected fun onRefreshEnd() {
         binding.refreshLayout.isRefreshing = false
     }
 
