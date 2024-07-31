@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.lollipop.debug.basic.DebugPagerHolder
-import com.lollipop.debug.local.databinding.DebugPanelPageHomeBinding
 import com.lollipop.debug.local.databinding.DebugPanelPageListBinding
 import com.lollipop.debug.local.databinding.DebugPanelPageStaticBinding
 import com.lollipop.debug.panel.pager.DebugHomePagerHolder
@@ -18,18 +17,12 @@ class DebugPanelPagerAdapter(val data: List<DebugPanelPageDescriptor>) :
         when {
             viewType == DebugPanelPageDescriptor.Main.itemType -> {
                 // main page
-                return DebugHomePagerHolder(
-                    DebugPanelPageHomeBinding.inflate(
-                        LayoutInflater.from(parent.context),
-                        parent,
-                        false
-                    )
-                )
+                return DebugHomePagerHolder(parent)
             }
 
             viewType == DebugPanelPageDescriptor.Toast.itemType -> {
                 // toast page
-                return DebugToastHistoryPagerHolder(parent.context)
+                return DebugToastHistoryPagerHolder(parent)
             }
 
             viewType >= DebugPanelPageDescriptor.LIST_PAGE_RANGE -> {

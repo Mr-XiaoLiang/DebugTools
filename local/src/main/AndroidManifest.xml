@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+    <application>
+        <activity
+            android:name="com.lollipop.debug.toast.DebugToastHistoryFullActivity"
+            android:exported="false"
+            android:theme="@style/DebugPageActivity"/>
+    </application>
 
 </manifest>

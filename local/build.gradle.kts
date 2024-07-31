@@ -43,6 +43,8 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.swiperefreshlayout)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.constraintlayout)
     compileOnly(project(":lite"))
     // 需要内置一个core模块，毕竟数据是必要的
     implementation(project(":core"))

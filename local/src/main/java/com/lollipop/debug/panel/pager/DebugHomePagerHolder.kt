@@ -3,42 +3,46 @@ package com.lollipop.debug.panel.pager
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.lollipop.debug.basic.DebugPagerHolder
-import com.lollipop.debug.local.R
+import com.lollipop.debug.basic.DebugBasicHistoryPagerHolder
 import com.lollipop.debug.local.databinding.DebugItemStaticButtonBinding
-import com.lollipop.debug.local.databinding.DebugPanelPageHomeBinding
 import com.lollipop.debug.panel.DebugPanelImpl
+import com.lollipop.debug.panel.DebugPanelPageDescriptor
+import com.lollipop.debug.panel.pager.DebugHomePagerHolder.MenuInfo
 
 class DebugHomePagerHolder(
-    val binding: DebugPanelPageHomeBinding
-) : DebugPagerHolder(binding.root), SwipeRefreshLayout.OnRefreshListener {
+    parent: ViewGroup
+) : DebugBasicHistoryPagerHolder<MenuInfo>(parent) {
 
     private val currentMenuData = ArrayList<MenuInfo>()
-    private val adapter = MenuAdapter(currentMenuData, ::onItemClick)
 
-    init {
-        binding.recyclerView.adapter = adapter
-        binding.recyclerView.layoutManager = LinearLayoutManager(
-            binding.root.context, RecyclerView.VERTICAL, false
-        )
-        binding.refreshLayout.setOnRefreshListener(this)
-        binding.refreshLayout.setColorSchemeResources(
-            R.color.debugRefreshLayoutColorScheme1,
-            R.color.debugRefreshLayoutColorScheme2,
-            R.color.debugRefreshLayoutColorScheme3,
-            R.color.debugRefreshLayoutColorScheme4
-        )
-        onRefresh()
+    override fun createAdapter(): RecyclerView.Adapter<*> {
+        return MenuAdapter(currentMenuData, ::onItemClick)
+    }
+
+    override fun onBind(info: DebugPanelPageDescriptor) {
+        super.onBind(info)
+        if (currentMenuData.isEmpty()) {
+            callRefresh()
+        }
+    }
+
+    override fun createOptions(): List<Option> {
+        return emptyList()
+    }
+
+    override fun canLoadMore(): Boolean {
+        return false
+    }
+
+    override fun callLoadMore() {
     }
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onRefresh() {
         syncData()
-        adapter.notifyDataSetChanged()
-        binding.refreshLayout.isRefreshing = false
+        notifyDataSetChanged()
+        onRefreshEnd()
     }
 
     private fun onItemClick(info: MenuInfo) {
@@ -51,7 +55,7 @@ class DebugHomePagerHolder(
         currentMenuData.addAll(infos)
     }
 
-    private class MenuInfo(
+    class MenuInfo(
         val id: String,
         val name: String
     )

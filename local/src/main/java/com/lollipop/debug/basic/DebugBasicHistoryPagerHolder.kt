@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import android.util.TypedValue
 import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
@@ -18,8 +20,19 @@ import com.lollipop.debug.local.databinding.DebugPanelPageBasicHistoryBinding
 import com.lollipop.debug.panel.DebugPanelPageDescriptor
 
 abstract class DebugBasicHistoryPagerHolder<T>(
-    val binding: DebugPanelPageBasicHistoryBinding
+    parent: ViewGroup,
+    val binding: DebugPanelPageBasicHistoryBinding = createBinding(parent)
 ) : DebugPagerHolder(binding.root), SwipeRefreshLayout.OnRefreshListener {
+
+    companion object {
+        fun createBinding(parent: ViewGroup): DebugPanelPageBasicHistoryBinding {
+            return DebugPanelPageBasicHistoryBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        }
+    }
 
     protected var adapter: RecyclerView.Adapter<*>? = null
     protected var isAttached = false
@@ -64,7 +77,6 @@ abstract class DebugBasicHistoryPagerHolder<T>(
 
     override fun onBind(info: DebugPanelPageDescriptor) {
         initPager()
-        onRefresh()
     }
 
     @SuppressLint("NotifyDataSetChanged")

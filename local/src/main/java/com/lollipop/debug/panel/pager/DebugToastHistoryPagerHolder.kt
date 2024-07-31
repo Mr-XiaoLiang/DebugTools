@@ -1,27 +1,23 @@
 package com.lollipop.debug.panel.pager
 
 import android.annotation.SuppressLint
-import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.lollipop.debug.DebugToastHelper
 import com.lollipop.debug.basic.DebugBasicHistoryPagerHolder
 import com.lollipop.debug.local.R
 import com.lollipop.debug.local.databinding.DebugItemToastHistoryBinding
-import com.lollipop.debug.local.databinding.DebugPanelPageBasicHistoryBinding
+import com.lollipop.debug.panel.DebugPanelPageDescriptor
+import com.lollipop.debug.toast.DebugToastHistoryFullActivity
 import com.lollipop.debug.toast.ToastInfo
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class DebugToastHistoryPagerHolder(
-    context: Context
-) : DebugBasicHistoryPagerHolder<ToastInfo>(
-    DebugPanelPageBasicHistoryBinding.inflate(
-        LayoutInflater.from(context)
-    )
-), SwipeRefreshLayout.OnRefreshListener {
+    parent: ViewGroup
+) : DebugBasicHistoryPagerHolder<ToastInfo>(parent) {
 
     private val currentToastData = ArrayList<ToastInfo>()
 
@@ -32,9 +28,9 @@ class DebugToastHistoryPagerHolder(
     override fun createOptions(): List<Option> {
         return listOf(
             option(
-                title = R.string.refresh,
+                title = R.string.detail,
             ) {
-                callRefresh()
+                openDetail()
             }
         )
     }
@@ -45,6 +41,17 @@ class DebugToastHistoryPagerHolder(
 
     override fun callLoadMore() {
         // nothing
+    }
+
+    private fun openDetail() {
+        DebugToastHistoryFullActivity.start(itemView.context)
+    }
+
+    override fun onBind(info: DebugPanelPageDescriptor) {
+        super.onBind(info)
+        if (currentToastData.isEmpty()) {
+            callRefresh()
+        }
     }
 
     @SuppressLint("NotifyDataSetChanged")
