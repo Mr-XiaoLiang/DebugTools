@@ -7,4 +7,84 @@
     android:layout_height="match_parent"
     tools:context="com.lollipop.debug.toast.DebugToastHistoryFullActivity">
 
+    <LinearLayout
+        android:id="@+id/actionBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:elevation="6dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:paddingTop="24dp">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/backButton"
+            android:layout_width="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_height="48dp"
+            android:padding="12dp"
+            android:src="@drawable/debug_baseline_arrow_back_24"
+            app:tint="@color/debugActionBarIcon" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="4dp"
+            android:layout_marginEnd="12dp">
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/searchInputView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/title_toast_history_full"
+                android:paddingVertical="12dp"
+                android:paddingStart="12dp"
+                android:paddingEnd="48dp"
+                android:background="@android:color/transparent"
+                android:imeOptions="actionSearch"
+                android:textColor="@color/debugActionBarText"
+                android:textColorHint="@color/debugActionBarTextHint"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/cleanSearchButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center_vertical|end"
+                android:padding="12dp"
+                android:src="@drawable/debug_outline_cancel_24"
+                android:visibility="gone"
+                app:tint="@color/debugActionBarIcon" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/requestSearchButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center_vertical|end"
+                android:padding="12dp"
+                android:src="@drawable/debug_baseline_search_24"
+                app:tint="@color/debugActionBarIcon" />
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/refreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/actionBar">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/toastListView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/actionBar" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

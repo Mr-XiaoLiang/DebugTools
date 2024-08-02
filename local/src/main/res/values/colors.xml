@@ -22,4 +22,8 @@
 
     <color name="debugStaticTextLabel">#0095BC</color>
     <color name="debugStaticTextDetail">#494949</color>
+
+    <color name="debugActionBarIcon">#333</color>
+    <color name="debugActionBarText">#333</color>
+    <color name="debugActionBarTextHint">#666</color>
 </resources>
