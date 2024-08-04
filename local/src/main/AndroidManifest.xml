@@ -5,9 +5,12 @@
 
     <application>
         <activity
+            android:name="com.lollipop.debug.track.DebugTrackHistoryDetailActivity"
+            android:exported="false" />
+        <activity
             android:name="com.lollipop.debug.toast.DebugToastHistoryFullActivity"
             android:exported="false"
-            android:theme="@style/DebugPageActivity"/>
+            android:theme="@style/DebugPageActivity" />
     </application>
 
 </manifest>

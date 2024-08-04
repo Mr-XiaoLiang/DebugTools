@@ -37,7 +37,7 @@
                 android:id="@+id/searchInputView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/title_toast_history_full"
+                tools:hint="@string/title_toast_history_full"
                 android:paddingVertical="12dp"
                 android:paddingStart="12dp"
                 android:paddingEnd="48dp"
@@ -79,7 +79,7 @@
         app:layout_constraintTop_toBottomOf="@id/actionBar">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/toastListView"
+            android:id="@+id/contentListView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
