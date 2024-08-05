@@ -20,6 +20,7 @@ import com.lollipop.debug.floating.impl.FloatingButtonImpl
 import com.lollipop.debug.floating.impl.FloatingPanelComposeImpl
 import com.lollipop.debug.floating.impl.FloatingPanelViewImpl
 import com.lollipop.debug.floating.utils.FloatingDragHelper
+import kotlin.math.min
 
 class FloatingOverlayCreator(private val app: Application) : FloatingCreator() {
 
@@ -216,7 +217,9 @@ class FloatingOverlayCreator(private val app: Application) : FloatingCreator() {
             val minHeightWeight = config.minHeightWeight
             val heightOffsetStep = config.heightOffsetStep
             val screenSize = FloatingHelper.getScreenSize(m)
-            p.width = (screenSize.width * maxWidthWight).toInt()
+            // 为了避免横屏时候过宽，所以这里取短边
+            p.width = (min(screenSize.width, screenSize.height) * maxWidthWight).toInt()
+            // 高度只要按照当前的高度计算即可
             p.height = (screenSize.height * heightWeight).toInt()
             p.x = 0
             p.y = 0

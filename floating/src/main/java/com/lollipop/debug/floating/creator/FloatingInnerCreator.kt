@@ -21,6 +21,7 @@ import com.lollipop.debug.floating.impl.FloatingPanelComposeImpl
 import com.lollipop.debug.floating.impl.FloatingPanelViewImpl
 import com.lollipop.debug.floating.utils.FloatingDragHelper
 import java.util.LinkedList
+import kotlin.math.min
 
 class FloatingInnerCreator(val activity: Activity) : FloatingCreator() {
 
@@ -141,7 +142,9 @@ class FloatingInnerCreator(val activity: Activity) : FloatingCreator() {
         addView(view) { r, v, p ->
             val groupWidth = r.width
             val groupHeight = r.height
-            p.width = (groupWidth * maxWidthWight).toInt()
+            // 为了避免横屏时候过宽，所以这里取短边
+            p.width = (min(groupWidth, groupHeight) * maxWidthWight).toInt()
+            // 高度只要按照当前的高度计算即可
             p.height = (groupHeight * heightWeight).toInt()
             p.gravity = 0
             p.topMargin = (groupHeight - p.height) / 2
