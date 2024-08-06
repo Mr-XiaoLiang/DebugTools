@@ -26,4 +26,26 @@
     <color name="debugActionBarIcon">#333</color>
     <color name="debugActionBarText">#333</color>
     <color name="debugActionBarTextHint">#666</color>
+
+    <color name="debugTrackItemBackground">#FFF</color>
+    <color name="debugTrackItemTarget">#333</color>
+    <color name="debugTrackItemTime">#666</color>
+    <color name="debugTrackItemPage">#444</color>
+    <color name="debugTrackItemSource">#666</color>
+    <color name="debugTrackItemMessage">#666</color>
+    <color name="debugTrackItemData">#666</color>
+    <color name="debugTrackItemExtra">#666</color>
+    <color name="debugTrackItemPageArrow">#0095BC</color>
+    <color name="debugTrackItemParamsArrow">#0095BC</color>
+    <color name="debugTrackItemParamsKey">#444</color>
+    <color name="debugTrackItemParamsValue">#333</color>
+
+    <color name="debugTrackItemActionBackground">#004B9B</color>
+    <color name="debugTrackItemActionClick">#C83C05</color>
+    <color name="debugTrackItemActionForeground">#0EA6CE</color>
+    <color name="debugTrackItemActionLaunch">#00BC71</color>
+    <color name="debugTrackItemActionOther">#3D585F</color>
+    <color name="debugTrackItemActionPageHide">#37993C</color>
+    <color name="debugTrackItemActionPageShow">#20D728</color>
+    <color name="debugTrackItemActionRefresh">#CA0086</color>
 </resources>

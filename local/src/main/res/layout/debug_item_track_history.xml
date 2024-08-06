@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/debugTrackItemBackground"
+    android:elevation="6dp"
+    android:paddingHorizontal="8dp"
+    android:paddingVertical="8dp">
+
+    <TextView
+        android:id="@+id/typeView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="4dp"
+        android:paddingVertical="2dp"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:background="#3f00"
+        tools:text="Launch" />
+
+    <TextView
+        android:id="@+id/targetNameView"
+        android:layout_width="0px"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:textColor="@color/debugTrackItemTarget"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/typeView"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="App Name" />
+
+    <TextView
+        android:id="@+id/timeView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:gravity="end"
+        android:paddingVertical="2dp"
+        android:textColor="@color/debugTrackItemTime"
+        android:textSize="12sp"
+        app:layout_constraintTop_toBottomOf="@id/targetNameView"
+        tools:text="2024-08-06 21:12:45.456" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/pageArrowIcon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/debug_baseline_double_arrow_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/pageNameView"
+        app:tint="@color/debugTrackItemPageArrow"
+        app:layout_constraintTop_toTopOf="@id/pageNameView"/>
+
+    <TextView
+        android:id="@+id/pageNameView"
+        android:layout_width="0px"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/debugTrackItemPage"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/pageArrowIcon"
+        app:layout_constraintTop_toBottomOf="@id/timeView"
+        tools:text="App Name" />
+
+    <TextView
+        android:id="@+id/sourceNameView"
+        android:layout_width="0px"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="6dp"
+        android:gravity="end"
+        android:textColor="@color/debugTrackItemSource"
+        android:textSize="14sp"
+        app:layout_constraintTop_toTopOf="@id/pageNameView"
+        app:layout_constraintEnd_toStartOf="@id/pageArrowIcon"
+        app:layout_constraintBottom_toBottomOf="@id/pageNameView"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="App Name" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/pageBarrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="pageNameView,pageArrowIcon,sourceNameView" />
+
+    <TextView
+        android:id="@+id/messageView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:paddingVertical="2dp"
+        android:textColor="@color/debugTrackItemMessage"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@id/pageBarrier"
+        tools:text="pageNameView\npageArrowIcon\nsourceNameView" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

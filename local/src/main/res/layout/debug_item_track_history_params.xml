@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/debugTrackItemBackground"
+    android:elevation="6dp"
+    android:orientation="horizontal"
+    android:paddingHorizontal="8dp"
+    android:paddingVertical="4dp"
+    android:gravity="center_vertical">
+
+    <TextView
+        android:id="@+id/paramsKeyView"
+        android:layout_width="0px"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="end"
+        android:textSize="14sp"
+        android:textColor="@color/debugTrackItemParamsKey"
+        tools:text="Launch" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/debug_baseline_keyboard_arrow_right_24"
+        app:tint="@color/debugTrackItemParamsArrow" />
+
+    <TextView
+        android:id="@+id/paramsValueView"
+        android:layout_width="0px"
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
+        android:textColor="@color/debugTrackItemParamsValue"
+        android:textSize="14sp"
+        tools:text="App Name App Name" />
+
+</LinearLayout>

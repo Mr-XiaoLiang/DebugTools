@@ -2,4 +2,5 @@
 <resources>
     <string name="detail">详情</string>
     <string name="title_toast_history_full">Debug Toast</string>
+    <string name="toast_copied">已复制</string>
 </resources>

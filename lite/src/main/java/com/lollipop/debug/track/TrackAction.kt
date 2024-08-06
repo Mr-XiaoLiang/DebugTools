@@ -25,4 +25,8 @@ sealed class TrackAction(val type: String) {
     data object PageHide : TrackAction("page_hide")
     data object Refresh : TrackAction("refresh")
     class Other(type: String) : TrackAction(type)
+
+    val uppercase: String by lazy {
+        type.uppercase()
+    }
 }
